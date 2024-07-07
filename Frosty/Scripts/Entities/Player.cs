@@ -6,35 +6,35 @@ namespace Frosty.Scripts.Entities;
 public class Player : Entity
 {
     float speed = 500;
-    float jumpHeight = 700;
+    float jumpHeight = 500;
 
-    public Player(Vector2 position) : base(position)
+    public Player(Vector2 position) : base(position, 0, Vector2.One, Vector2.One * 50)
     {
-        size = Vector2.One * 50;
+
     }
 
     public override void Update()
     {
-        float horizontalMovement = 0;
-
         if (Input.Keyboard.Down(Keys.D))
         {
-            horizontalMovement = speed;
+            velocity.X = speed;
         }
         else if (Input.Keyboard.Down(Keys.A))
         {
-            horizontalMovement = -speed;
+            velocity.X = -speed;
+        }
+        else
+        {
+            velocity.X = 0;
         }
 
-        if (Input.Keyboard.Pressed(Keys.Space))
+        if (Input.Keyboard.Pressed(Keys.Space) && IsOnGround)
         {
             velocity.Y = -jumpHeight;
         }
 
-        velocity.X = horizontalMovement;
-
         base.Update();
-    }
+    } 
 
     public void Draw(Batcher batcher)
     {
