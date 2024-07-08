@@ -1,4 +1,6 @@
-﻿namespace Frosty.Scripts.Components;
+﻿using Foster.Framework;
+
+namespace Frosty.Scripts.Components;
 
 public sealed class Timer
 {
@@ -25,11 +27,11 @@ public sealed class Timer
         Paused = true;
     }
 
-    public void Step(float delta)
+    public void Update()
     {
         if (!Paused)
         {
-            TimeLeft += delta;
+            TimeLeft += Time.Delta;
 
             if (TimeLeft >= WaitTime)
             {
