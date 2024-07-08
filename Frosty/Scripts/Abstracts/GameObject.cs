@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Frosty.Scripts.Abstracts;
 
-public class GameObject2D
+public class GameObject
 {
     public Vector2 position;
     public float rotation;
@@ -19,7 +19,7 @@ public class GameObject2D
     }
         
 
-    public GameObject2D(Vector2 position, float rotation, Vector2 scale, Vector2 size)
+    public GameObject(Vector2 position, float rotation, Vector2 scale, Vector2 size)
     {
         this.position = position;
         this.rotation = rotation;

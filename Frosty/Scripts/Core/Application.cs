@@ -10,19 +10,35 @@ public class Application : Module
 
     public static float gravity = 20;
 
-    public static Texture blockTexture { get; } = new Texture(new Image(Path.Combine("Assets", "StaticObjects", "Block.png")));
+    public static Texture blockTexture { get; private set; }
+    public static Aseprite playerIdle;
 
-    List<Block> blocks = new();
-    Batcher batcher = new();
-    Player player = new(new Vector2(100, 100));
-    Random random = new();
+    public static Aseprite playerWalkRight;
+    public static Aseprite playerWalkLeft;
+
+    List<Block> blocks;
+    Batcher batcher;
+    Player player;
+    Random random;
 
     public override void Startup()
     {
+        blockTexture = new Texture(new Aseprite(Path.Combine("Assets", "Objects", "Block.ase")).Frames[0].Cels[0].Image);
 
-        blocks.Add(new Block(new Vector2(50, 250), new Vector2(3, 3)));
-        blocks.Add(new Block(new Vector2(200, 300), new Vector2(3, 3)));
-        blocks.Add(new Block(new Vector2(300, 400), new Vector2(3, 3)));
+        playerIdle = new Aseprite(Path.Combine("Assets", "Player", "player_idle.ase"));
+        playerWalkRight = new Aseprite(Path.Combine("Assets", "Player", "player_walk_right.ase"));
+        playerWalkLeft = new Aseprite(Path.Combine("Assets", "Player", "player_walk_left.ase"));
+
+        blocks = new List<Block>();
+        batcher = new Batcher();
+        player = new Player(new Vector2(100, 100));
+        random = new Random();
+
+
+        for (int i = 0; i < 10; i++)
+        {
+            blocks.Add(new Block(new Vector2(i * 50, 300), new Vector2(3, 3)));
+        }
     }
 
     public override void Update()

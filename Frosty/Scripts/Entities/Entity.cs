@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
 
-public class Entity : GameObject2D
+public class Entity : GameObject
 {
     public bool IsOnGround { get; protected set; }
     public Vector2 velocity;
