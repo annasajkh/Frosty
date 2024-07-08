@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Frosty.Scripts.Core;
 
-public class Application : Module
+public sealed class Application : Module
 {
 
     public static float gravity = 20;

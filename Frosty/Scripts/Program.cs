@@ -3,7 +3,7 @@ using Frosty.Scripts.Core;
 
 namespace Frosty.Scripts;
 
-internal class Program
+internal static class Program
 {
     static void Main(string[] args)
     {

@@ -31,8 +31,15 @@ public class Player : Entity
             else
             {
                 AnimationManager.SetCurrent("player_walk_right");
+
+                if (AnimationManager.CurrentAnimation is not null)
+                {
+                    AnimationManager.CurrentAnimation.FrameIndex = AnimationManager.CurrentAnimation.TotalFrames - 1;
+                }
+
                 AnimationManager.Stop();
             }
+
             velocity.X = speed;
         }
         else if (Input.Keyboard.Down(Keys.A))
@@ -45,6 +52,12 @@ public class Player : Entity
             else
             {
                 AnimationManager.SetCurrent("player_walk_left");
+
+                if (AnimationManager.CurrentAnimation is not null)
+                {
+                    AnimationManager.CurrentAnimation.FrameIndex = AnimationManager.CurrentAnimation.TotalFrames - 1;
+                }
+
                 AnimationManager.Stop();
             }
 

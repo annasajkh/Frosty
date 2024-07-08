@@ -2,7 +2,7 @@
 
 namespace Frosty.Scripts.Components;
 
-public class Animation
+public sealed class Animation
 {
     public Aseprite Aseprite { get; }
 
@@ -10,9 +10,16 @@ public class Animation
     public bool Playing { get; private set; }
     public bool Looping { get;  }
 
-    public int FrameIndex { get; private set; }
+    public int FrameIndex { get; set; }
     public Texture CurrentFrame { get; private set; }
-    public bool Flipped { get; set; }
+
+    public int TotalFrames
+    {
+        get
+        {
+            return Aseprite.Frames.Length;
+        }
+    }
 
     private float time;
 
@@ -39,7 +46,7 @@ public class Animation
     {
         CurrentFrame.SetData<Color>(Aseprite.RenderFrame(FrameIndex).Data);
 
-        if (time > PlaySpeed / Aseprite.Frames.Length)
+        if (Playing && time > PlaySpeed / Aseprite.Frames.Length)
         {
             FrameIndex++;
             time = 0;

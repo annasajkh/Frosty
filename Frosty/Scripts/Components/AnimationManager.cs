@@ -1,6 +1,6 @@
 ﻿namespace Frosty.Scripts.Components;
 
-public class AnimationManager
+public sealed class AnimationManager
 {
     private Dictionary<string, Animation> animations = new();
 
