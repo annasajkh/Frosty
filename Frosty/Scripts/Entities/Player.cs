@@ -19,7 +19,6 @@ public class Player : Entity
 
     PreviousFacing previousFacing;
 
-
     public AnimationManager AnimationManager { get; } = new();
 
     public Player(Vector2 position) : base(position, 0, Vector2.One * 3, new Vector2(Application.playerIdleLeft.Width, Application.playerIdleLeft.Height))

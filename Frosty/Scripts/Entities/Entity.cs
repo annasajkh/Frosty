@@ -20,7 +20,7 @@ public class Entity : GameObject
     {
         get
         {
-            return new Rect(position - (scale * size / 2 + new Vector2(10, 10)), position + (scale * size / 2 + new Vector2(10, 10)));
+            return new Rect(position - (scale * size / 2 + new Vector2(5, 5)), position + (scale * size / 2 + new Vector2(5, 5)));
         }
     }
 
@@ -59,8 +59,6 @@ public class Entity : GameObject
 
         if (collisionResult.Width < collisionResult.Height)
         {
-            float differentY = MathF.Abs(Rect.Y - other.Rect.Y);
-
             if (Rect.X > other.Rect.X)
             {
                 position.X += collisionResult.Width;

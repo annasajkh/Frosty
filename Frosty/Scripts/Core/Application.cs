@@ -1,4 +1,5 @@
 ﻿using Foster.Framework;
+using Frosty.Scripts.Components;
 using Frosty.Scripts.Entities;
 using Frosty.Scripts.StaticObjects;
 using System.Numerics;
@@ -18,13 +19,19 @@ public sealed class Application : Module
     public static Aseprite playerWalkRight;
     public static Aseprite playerWalkLeft;
 
+    public static Random Random { get; } = new(Time.Now.Milliseconds);
+
     List<Block> blocks;
     Batcher batcher;
     Player player;
     Random random;
 
+    Snowing snowing;
+
     public override void Startup()
     {
+        snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
+
         blockTexture = new Texture(new Aseprite(Path.Combine("Assets", "Objects", "Block.ase")).Frames[0].Cels[0].Image);
 
         playerIdleLeft = new Aseprite(Path.Combine("Assets", "Player", "player_idle_left.ase"));
@@ -56,6 +63,8 @@ public sealed class Application : Module
         {
             player.ResolveAwayFrom(block);
         }
+
+        snowing.Update();
     }
 
     public override void Render()
@@ -68,6 +77,8 @@ public sealed class Application : Module
         }
 
         player.Draw(batcher);
+
+        snowing.Draw(batcher);
 
         batcher.Render();
         batcher.Clear();
