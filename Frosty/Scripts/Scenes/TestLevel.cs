@@ -18,6 +18,9 @@ public class TestLevel : Scene
     public static Aseprite playerWalkRight;
     public static Aseprite playerWalkLeft;
 
+
+    public static Texture nightSky;
+
     List<Block> blocks;
     Player player;
 
@@ -28,6 +31,7 @@ public class TestLevel : Scene
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
 
         blockTexture = new Texture(new Aseprite(Path.Combine("Assets", "Objects", "Block.ase")).Frames[0].Cels[0].Image);
+        nightSky = new Texture(new Aseprite(Path.Combine("Assets", "Backgrounds", "night_sky.ase")).Frames[0].Cels[0].Image);
 
         playerIdleLeft = new Aseprite(Path.Combine("Assets", "Player", "player_idle_left.ase"));
         playerIdleRight = new Aseprite(Path.Combine("Assets", "Player", "player_idle_right.ase"));
@@ -39,12 +43,9 @@ public class TestLevel : Scene
         player = new Player(new Vector2(100, 100));
 
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 20; i++)
         {
-            if (i % 2 == 0)
-            {
-                blocks.Add(new Block(new Vector2(100 + i * 100, 300), new Vector2(3, 3)));
-            }
+            blocks.Add(new Block(new Vector2(i * 80, 500), new Vector2(3, 3)));
         }
     }
 
@@ -67,7 +68,9 @@ public class TestLevel : Scene
 
     public override void Render(Batcher batcher)
     {
-        Graphics.Clear(Color.CornflowerBlue);
+        Graphics.Clear(Color.Black);
+
+        batcher.Image(nightSky, Vector2.Zero, Color.White);
 
         foreach (var block in blocks)
         {

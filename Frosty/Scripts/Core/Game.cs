@@ -15,6 +15,7 @@ public sealed class Game : Module
     public override void Startup()
     {
         SceneManager.AddScene("TestLevel", new TestLevel());
+        SceneManager.ChangeScene("TestLevel");
     }
 
     public override void Update()
