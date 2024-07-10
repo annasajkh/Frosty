@@ -11,6 +11,13 @@ public sealed class SceneManager
 
     private Dictionary<string, Scene> scenes = new Dictionary<string, Scene>();
 
+    public SceneManager(string initialSceneName, Scene initialScene)
+    {
+        scenes.Add(initialSceneName, initialScene);
+        ActiveScene = scenes[initialSceneName];
+        ActiveScene.StartupInternal();
+    }
+
     /// <summary>
     /// Add a scene to the scene manager
     /// </summary>
@@ -19,28 +26,6 @@ public sealed class SceneManager
     public void AddScene(string name, Scene scene)
     {
         scenes.Add(name, scene);
-    }
-
-    /// <summary>
-    /// Set the active scene of the scene manager
-    /// </summary>
-    /// <param name="name">The name of the scene</param>
-    /// <exception cref="Exception">Throw an exception if the scene doesn't exist</exception>
-    public void SetActiveScene(string name)
-    {
-        Scene? scene;
-
-        if (scenes.TryGetValue(name, out scene))
-        {
-            ActiveScene = scenes[name];
-        }
-        else
-        {
-            throw new Exception($"Error: Scene with the name {name} doesn't exist in the scene manager");
-        }
-
-        ActiveScene = scenes[name];
-        ActiveScene.StartupInternal();
     }
 
     /// <summary>
