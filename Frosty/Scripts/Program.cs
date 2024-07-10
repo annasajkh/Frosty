@@ -7,7 +7,7 @@ internal static class Program
 {
     static void Main(string[] args)
     {
-        App.Register<Application>();
+        App.Register<Game>();
         App.Run("Frosty", 960, 540);
     }
 }

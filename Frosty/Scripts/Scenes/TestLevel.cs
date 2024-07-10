@@ -1,16 +1,15 @@
 ﻿using Foster.Framework;
+using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Components;
+using Frosty.Scripts.Core;
 using Frosty.Scripts.Entities;
 using Frosty.Scripts.StaticObjects;
 using System.Numerics;
 
-namespace Frosty.Scripts.Core;
+namespace Frosty.Scripts.Scenes;
 
-public sealed class Application : Module
+public class TestLevel : Scene
 {
-
-    public static float gravity = 20;
-
     public static Texture blockTexture { get; private set; }
 
     public static Aseprite playerIdleLeft;
@@ -19,12 +18,8 @@ public sealed class Application : Module
     public static Aseprite playerWalkRight;
     public static Aseprite playerWalkLeft;
 
-    public static Random Random { get; } = new(Time.Now.Milliseconds);
-
     List<Block> blocks;
-    Batcher batcher;
     Player player;
-    Random random;
 
     Snowing snowing;
 
@@ -41,9 +36,7 @@ public sealed class Application : Module
         playerWalkLeft = new Aseprite(Path.Combine("Assets", "Player", "player_walk_left.ase"));
 
         blocks = new List<Block>();
-        batcher = new Batcher();
         player = new Player(new Vector2(100, 100));
-        random = new Random();
 
 
         for (int i = 0; i < 10; i++)
@@ -57,6 +50,11 @@ public sealed class Application : Module
 
     public override void Update()
     {
+        if (Input.Keyboard.Pressed(Keys.Escape))
+        {
+            Game.SceneManager.ChangeScene("MainMenu");
+        }
+
         player.Update();
 
         foreach (var block in blocks)
@@ -67,7 +65,7 @@ public sealed class Application : Module
         snowing.Update();
     }
 
-    public override void Render()
+    public override void Render(Batcher batcher)
     {
         Graphics.Clear(Color.CornflowerBlue);
 
@@ -79,9 +77,6 @@ public sealed class Application : Module
         player.Draw(batcher);
 
         snowing.Draw(batcher);
-
-        batcher.Render();
-        batcher.Clear();
     }
 
     public override void Shutdown()

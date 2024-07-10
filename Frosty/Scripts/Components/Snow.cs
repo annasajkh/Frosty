@@ -17,7 +17,7 @@ public class Snow
         Position = position;
         Size = size;
         FallingSpeed = fallingSpeed;
-        angle = Application.Random.NextSingle() * 360;
+        angle = Game.Random.NextSingle() * 360;
     }
 
     public void Update()

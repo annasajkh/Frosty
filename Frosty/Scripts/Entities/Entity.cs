@@ -101,7 +101,7 @@ public class Entity : GameObject
     {
         coyoteJumpTimer.Update();
 
-        velocity.Y += Application.gravity;
+        velocity.Y += Game.gravity;
         position += velocity * Time.Delta;
 
         if (collidingEntity is Entity entity)

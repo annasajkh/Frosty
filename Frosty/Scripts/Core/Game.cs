@@ -1,0 +1,40 @@
+﻿using Foster.Framework;
+using Frosty.Scripts.Managers;
+using Frosty.Scripts.Scenes;
+
+namespace Frosty.Scripts.Core;
+
+public sealed class Game : Module
+{
+    public static float gravity = 20;
+    public static Random Random { get; } = new(Time.Now.Milliseconds);
+    public static SceneManager SceneManager { get; private set; } = new();
+
+    Batcher batcher = new();
+
+    public override void Startup()
+    {
+        SceneManager.AddScene("MainMenu", new MainMenu());
+        SceneManager.AddScene("TestLevel", new TestLevel());
+
+        SceneManager.SetActiveScene("MainMenu");
+    }
+
+    public override void Update()
+    {
+        SceneManager.ActiveScene?.Update();
+    }
+
+    public override void Render()
+    {
+        SceneManager.ActiveScene?.Render(batcher);
+
+        batcher.Render();
+        batcher.Clear();
+    }
+
+    public override void Shutdown()
+    {
+        SceneManager.ActiveScene?.Shutdown();
+    }
+}

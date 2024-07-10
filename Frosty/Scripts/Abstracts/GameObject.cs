@@ -16,8 +16,7 @@ public class GameObject
         {
             return new Rect(position - scale * size / 2, position + scale * size / 2);
         }
-    }
-        
+    }    
 
     public GameObject(Vector2 position, float rotation, Vector2 scale, Vector2 size)
     {

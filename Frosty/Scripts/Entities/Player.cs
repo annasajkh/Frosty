@@ -1,6 +1,6 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Components;
-using Frosty.Scripts.Core;
+using Frosty.Scripts.Scenes;
 using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
@@ -21,13 +21,13 @@ public class Player : Entity
 
     public AnimationManager AnimationManager { get; } = new();
 
-    public Player(Vector2 position) : base(position, 0, Vector2.One * 3, new Vector2(Application.playerIdleLeft.Width, Application.playerIdleLeft.Height))
+    public Player(Vector2 position) : base(position, 0, Vector2.One * 3, new Vector2(TestLevel.playerIdleLeft.Width, TestLevel.playerIdleLeft.Height))
     {
-        AnimationManager.AddAnimation("player_idle_left", new Animation(Application.playerIdleLeft, Application.playerIdleLeft.Width, Application.playerIdleLeft.Height, 0.5f, true));
-        AnimationManager.AddAnimation("player_idle_right", new Animation(Application.playerIdleRight, Application.playerIdleRight.Width, Application.playerIdleRight.Height, 0.5f, true));
+        AnimationManager.AddAnimation("player_idle_left", new Animation(TestLevel.playerIdleLeft, TestLevel.playerIdleLeft.Width, TestLevel.playerIdleLeft.Height, 0.5f, true));
+        AnimationManager.AddAnimation("player_idle_right", new Animation(TestLevel.playerIdleRight, TestLevel.playerIdleRight.Width, TestLevel.playerIdleRight.Height, 0.5f, true));
 
-        AnimationManager.AddAnimation("player_walk_right", new Animation(Application.playerWalkRight, Application.playerWalkRight.Width, Application.playerWalkRight.Height, 0.25f, true));
-        AnimationManager.AddAnimation("player_walk_left", new Animation(Application.playerWalkLeft, Application.playerWalkLeft.Width, Application.playerWalkLeft.Height, 0.25f, true));
+        AnimationManager.AddAnimation("player_walk_right", new Animation(TestLevel.playerWalkRight, TestLevel.playerWalkRight.Width, TestLevel.playerWalkRight.Height, 0.25f, true));
+        AnimationManager.AddAnimation("player_walk_left", new Animation(TestLevel.playerWalkLeft, TestLevel.playerWalkLeft.Width, TestLevel.playerWalkLeft.Height, 0.25f, true));
 
         previousFacing = PreviousFacing.Right;
     }
