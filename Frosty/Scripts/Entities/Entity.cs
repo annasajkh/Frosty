@@ -26,7 +26,7 @@ public class Entity : GameObject
 
     public Entity(Vector2 position, float rotation, Vector2 scale, Vector2 size) : base(position, rotation, scale, size)
     {
-        coyoteJumpTimer = new Timer(0.5f, true);
+        coyoteJumpTimer = new Timer(0.1f, true);
 
         coyoteJumpTimer.OnTimeout += () =>
         {

@@ -1,5 +1,6 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Components;
+using Frosty.Scripts.Core;
 using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
@@ -26,7 +27,7 @@ public class Player : Entity
 
     public AnimationManager AnimationManager { get; } = new();
 
-    public Player(Vector2 position) : base(position, 0, Vector2.One * 3, new Vector2(playerIdleLeft.Width, playerIdleLeft.Height))
+    public Player(Vector2 position) : base(position, 0, Vector2.One * Game.Scale, new Vector2(playerIdleLeft.Width, playerIdleLeft.Height))
     {
         AnimationManager.AddAnimation("player_idle_left", new Animation(playerIdleLeft, playerIdleLeft.Width, playerIdleLeft.Height, 0.5f, true));
         AnimationManager.AddAnimation("player_idle_right", new Animation(playerIdleRight, playerIdleRight.Width, playerIdleRight.Height, 0.5f, true));

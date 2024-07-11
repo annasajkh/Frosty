@@ -8,6 +8,6 @@ internal static class Program
     static void Main(string[] args)
     {
         App.Register<Game>();
-        App.Run("Frosty", 960, 540);
+        App.Run("Frosty", 960, 528);
     }
 }
