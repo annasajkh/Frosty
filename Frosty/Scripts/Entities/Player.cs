@@ -1,6 +1,5 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Components;
-using Frosty.Scripts.Scenes;
 using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
@@ -14,6 +13,12 @@ public class Player : Entity
         Right
     }
 
+    private static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Player", "player_idle_left.ase"));
+    private static Aseprite playerIdleRight = new Aseprite(Path.Combine("Assets", "Player", "player_idle_right.ase"));
+
+    private static Aseprite playerWalkRight = playerWalkRight = new Aseprite(Path.Combine("Assets", "Player", "player_walk_right.ase"));
+    private static Aseprite playerWalkLeft = playerWalkLeft = new Aseprite(Path.Combine("Assets", "Player", "player_walk_left.ase"));
+
     float speed = 300;
     float jumpHeight = 400;
 
@@ -21,13 +26,13 @@ public class Player : Entity
 
     public AnimationManager AnimationManager { get; } = new();
 
-    public Player(Vector2 position) : base(position, 0, Vector2.One * 3, new Vector2(TestLevel.playerIdleLeft.Width, TestLevel.playerIdleLeft.Height))
+    public Player(Vector2 position) : base(position, 0, Vector2.One * 3, new Vector2(playerIdleLeft.Width, playerIdleLeft.Height))
     {
-        AnimationManager.AddAnimation("player_idle_left", new Animation(TestLevel.playerIdleLeft, TestLevel.playerIdleLeft.Width, TestLevel.playerIdleLeft.Height, 0.5f, true));
-        AnimationManager.AddAnimation("player_idle_right", new Animation(TestLevel.playerIdleRight, TestLevel.playerIdleRight.Width, TestLevel.playerIdleRight.Height, 0.5f, true));
+        AnimationManager.AddAnimation("player_idle_left", new Animation(playerIdleLeft, playerIdleLeft.Width, playerIdleLeft.Height, 0.5f, true));
+        AnimationManager.AddAnimation("player_idle_right", new Animation(playerIdleRight, playerIdleRight.Width, playerIdleRight.Height, 0.5f, true));
 
-        AnimationManager.AddAnimation("player_walk_right", new Animation(TestLevel.playerWalkRight, TestLevel.playerWalkRight.Width, TestLevel.playerWalkRight.Height, 0.25f, true));
-        AnimationManager.AddAnimation("player_walk_left", new Animation(TestLevel.playerWalkLeft, TestLevel.playerWalkLeft.Width, TestLevel.playerWalkLeft.Height, 0.25f, true));
+        AnimationManager.AddAnimation("player_walk_right", new Animation(playerWalkRight, playerWalkRight.Width, playerWalkRight.Height, 0.25f, true));
+        AnimationManager.AddAnimation("player_walk_left", new Animation(playerWalkLeft, playerWalkLeft.Width, playerWalkLeft.Height, 0.25f, true));
 
         previousFacing = PreviousFacing.Right;
     }

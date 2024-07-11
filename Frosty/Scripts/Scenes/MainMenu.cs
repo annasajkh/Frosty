@@ -13,13 +13,11 @@ public class MainMenu : Scene
 
     public override void Startup()
     {
-
         font = new SpriteFont(Path.Combine("Assets", "Fonts", "Arial.ttf"), 32);
     }
 
     public override void Update()
     {
-
         if (Input.Keyboard.Pressed(Keys.Enter))
         {
             Game.SceneManager.ChangeScene("TestLevel");

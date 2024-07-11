@@ -23,7 +23,7 @@ public class Snowing
 
         timer.OnTimeout += () =>
         {
-            Snows.Add(new Snow(Position + new Vector2(Game.Random.Next((int)(Position.X), (int)(Position.X + Wide)), -10), Game.Random.Next(1, 3), Game.Random.Next(50, 200)));
+            Snows.Add(new Snow(Position + new Vector2(Game.Random.Next((int)(Position.X), (int)(Position.X + Wide)), -10), Game.Random.Next(1, 2), Game.Random.Next(50, 200)));
         };
 
         timer.Start();
