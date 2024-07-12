@@ -10,10 +10,10 @@ public sealed class Game : Module
     public static float Scale { get; } = 3;
     public static int TileSize { get; } = 16;
 
+    public static bool DebugMode { get; } = true;
 
     public static SpriteFont ArialFont { get; } = new SpriteFont(Path.Combine("Assets", "Fonts", "Arial.ttf"), 32);
     public static Texture NightSky { get; } = new Texture(new Aseprite(Path.Combine("Assets", "Backgrounds", "night_sky.ase")).Frames[0].Cels[0].Image);
-    public static Texture Ground { get; } = new Texture(new Aseprite(Path.Combine("Assets", "Tilesets", "ground.ase")).Frames[0].Cels[0].Image);
 
     public static float gravity = 20;
     public static Random Random { get; } = new(Time.Now.Milliseconds);

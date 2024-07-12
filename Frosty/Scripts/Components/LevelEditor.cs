@@ -4,26 +4,53 @@ using Frosty.Scripts.DataStructures;
 using Frosty.Scripts.StaticObjects;
 using Frosty.Scripts.Utils;
 using System.Numerics;
+using Newtonsoft.Json;
 
 namespace Frosty.Scripts.Components;
 
 public class LevelEditor
 {
     public int CurrentTileIndex { get; private set; } = 0;
-    public int TotalTiles { get; }
 
     public bool Editing { get; set; }
-    
-    public Tileset Tileset { get; }
+
+    public Tileset? Tileset { get; private set; }
     public Dictionary<int, TileObject> Tiles { get; } = new();
 
     bool isDeleting = false;
 
-    public LevelEditor(Tileset tileset, bool editing, int totalTiles)
+    public LevelEditor(bool editing, Tileset? tileset = null)
     {
         Tileset = tileset;
         Editing = editing;
-        TotalTiles = totalTiles;
+    }
+
+    public void Save(string path)
+    {
+        List<Tile> tilesToSave = new();
+
+        foreach (var tile in Tiles)
+        {
+            tilesToSave.Add(new Tile(tile.Value.position, tile.Value.Rect));
+        }
+
+        LevelEditorSaveData levelEditorSaveData = new(Tileset.AsepritePath, Tileset.TileWidth, Tileset.TileHeight, Tileset.RowTotal, Tileset.ColumnTotal, Tileset.TotalTiles, tilesToSave);
+
+        string levelJson = JsonConvert.SerializeObject(levelEditorSaveData);
+
+        File.WriteAllText(path, levelJson);
+    }
+
+    public void Load(string path)
+    {
+        var levelData = JsonConvert.DeserializeObject<LevelEditorSaveData>(File.ReadAllText(path));
+
+        Tileset = new Tileset(levelData.asepritePath, levelData.tileWidth, levelData.tileHeight, levelData.totalRow, levelData.totalColumn, levelData.totalTiles);
+
+        foreach (var tileData in levelData.tiles)
+        {
+            Tiles.Add(ToTileObject(tileData).GetHashCode(), ToTileObject(tileData));
+        }
     }
 
     public void Update()
@@ -70,19 +97,19 @@ public class LevelEditor
             CurrentTileIndex -= 1;
         }
 
-        if (CurrentTileIndex > TotalTiles - 1)
+        if (CurrentTileIndex > Tileset.TotalTiles - 1)
         {
             CurrentTileIndex = 0;
         }
         else if (CurrentTileIndex < 0)
         {
-            CurrentTileIndex = TotalTiles - 1;
+            CurrentTileIndex = Tileset.TotalTiles - 1;
         }
     }
 
     public TileObject ToTileObject(Tile tile)
     {
-        return new TileObject(tile.Position, Vector2.One * Game.Scale, Tileset.Texture, tile.Rect);
+        return new TileObject(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, Tileset.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight));
     }
 
     public Tile ToTile(TileObject tileObject)
@@ -117,7 +144,6 @@ public class LevelEditor
         {
             batcher.Image(Tileset.Texture, Tileset.GetRect(CurrentTileIndex), Vector2.Zero, new Color(100, 100, 100, 100));
         }
-
 
         batcher.PopMatrix();
     }

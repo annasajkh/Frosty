@@ -2,51 +2,44 @@
 using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
 using System.Numerics;
-using Timer = Frosty.Scripts.Components.Timer;
 
 namespace Frosty.Scripts.Entities;
 
 public class Entity : GameObject
 {
-    public bool IsOnGroundCoyote { get; protected set; }
     public bool IsOnGround { get; protected set; }
     public Vector2 velocity;
+    public float CoyoteJumpDelay { get; } = 0.1f;
+    public float MayJump { get; protected set; }
+
+    private HashSet<bool> isOnGroundSet = new();
 
     Entity collidingEntity;
 
-    Timer coyoteJumpTimer;
-
-    public Rect RectCoyote
+    public Rect CoyoteRect
     {
         get
         {
-            return new Rect(position - (scale * size / 2 + new Vector2(5, 5)), position + (scale * size / 2 + new Vector2(5, 5)));
+            return new Rect(position - (scale * size / 2 + new Vector2(10, 10)), position + (scale * size / 2 + new Vector2(10, 10)));
         }
     }
 
     public Entity(Vector2 position, float rotation, Vector2 scale, Vector2 size) : base(position, rotation, scale, size)
     {
-        coyoteJumpTimer = new Timer(0.1f, true);
 
-        coyoteJumpTimer.OnTimeout += () =>
-        {
-            IsOnGroundCoyote = false;
-        };
     }
 
     public void ResolveAwayFrom(Entity other)
     {
         collidingEntity = other;
 
-
-        if (RectCoyote.Overlaps(other.Rect))
+        if (CoyoteRect.Overlaps(other.Rect))
         {
-            Rect collisionCoyoteResult = RectCoyote.OverlapRect(other.Rect);
+            Rect collisionCoyoteResult = CoyoteRect.OverlapRect(other.Rect);
 
-            if (collisionCoyoteResult.Width > collisionCoyoteResult.Height && RectCoyote.Y < other.Rect.Y)
+            if (collisionCoyoteResult.Width > collisionCoyoteResult.Height && CoyoteRect.Y < other.Rect.Y)
             {
-                IsOnGroundCoyote = true;
-                IsOnGround = true; 
+                isOnGroundSet.Add(true); 
             }
         }
 
@@ -64,16 +57,14 @@ public class Entity : GameObject
                 position.X += collisionResult.Width;
 
                 velocity.X = 0;
-                coyoteJumpTimer.Start();
-                IsOnGround = false;
+                isOnGroundSet.Add(false);
             }
             else
             {
                 position.X -= collisionResult.Width;
 
                 velocity.X = 0;
-                coyoteJumpTimer.Start();
-                IsOnGround = false;
+                isOnGroundSet.Add(false);
             }
         }
         else
@@ -83,23 +74,37 @@ public class Entity : GameObject
                 position.Y += collisionResult.Height;
 
                 velocity.Y = 0;
-                coyoteJumpTimer.Start();
-                IsOnGround = false;
+                isOnGroundSet.Add(false);
             }
             else
             {
                 position.Y -= collisionResult.Height;
 
                 velocity.Y = 0;
-                IsOnGroundCoyote = true;
-                IsOnGround = true;
+                isOnGroundSet.Add(true);
             }
         }
     }
 
     public virtual void Update()
     {
-        coyoteJumpTimer.Update();
+        if (isOnGroundSet.Contains(true))
+        {
+            IsOnGround = true;
+        }
+        else
+        {
+            IsOnGround = false;
+        }
+
+        isOnGroundSet.Clear();
+
+        if (IsOnGround)
+        {
+            MayJump = CoyoteJumpDelay;
+        }
+
+        MayJump -= Time.Delta;
 
         velocity.Y += Game.gravity;
         position += velocity * Time.Delta;
@@ -108,8 +113,8 @@ public class Entity : GameObject
         {            
             if (!Rect.Overlaps(entity.Rect))
             {
-                coyoteJumpTimer.Start();
-                IsOnGround = false;
+
+                isOnGroundSet.Add(false);
             }
         }
     }

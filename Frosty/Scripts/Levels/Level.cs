@@ -18,14 +18,21 @@ public class Level : Scene
 
     public override void Startup()
     {
-        levelEditor = new LevelEditor(new Tileset(Game.Ground, Game.TileSize, Game.TileSize, 8, 2), true, 9);
+        levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "ground.ase"], Game.TileSize, Game.TileSize, 8, 2, 9));
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
 
         player = new Player(new Vector2(100, 100));
+
+        levelEditor.Load(Path.Combine("Assets", "Levels", $"{GetType().Name}.json"));
     }
 
     public override void Update()
     {
+        if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Down(Keys.S))
+        {
+            levelEditor.Save(Path.Combine("..", "..", "..", "Assets", "Levels", $"{GetType().Name}.json"));
+        }
+
         if (Input.Keyboard.Pressed(Keys.P))
         {
             Paused = !Paused;

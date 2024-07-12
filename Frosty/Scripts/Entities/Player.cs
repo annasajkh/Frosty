@@ -5,23 +5,22 @@ using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
 
+enum PreviousFacing
+{
+    Left,
+    Right
+}
 
 public class Player : Entity
 {
-    enum PreviousFacing
-    {
-        Left,
-        Right
-    }
+    float speed = 300;
+    float jumpHeight = 500;
 
     private static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Player", "player_idle_left.ase"));
     private static Aseprite playerIdleRight = new Aseprite(Path.Combine("Assets", "Player", "player_idle_right.ase"));
 
     private static Aseprite playerWalkRight = playerWalkRight = new Aseprite(Path.Combine("Assets", "Player", "player_walk_right.ase"));
     private static Aseprite playerWalkLeft = playerWalkLeft = new Aseprite(Path.Combine("Assets", "Player", "player_walk_left.ase"));
-
-    float speed = 300;
-    float jumpHeight = 400;
 
     PreviousFacing previousFacing;
 
@@ -42,7 +41,7 @@ public class Player : Entity
     {
         if (Input.Keyboard.Down(Keys.D))
         {
-            if (IsOnGroundCoyote)
+            if (MayJump > 0)
             {
                 AnimationManager.SetCurrent("player_walk_right");
                 AnimationManager.Play();
@@ -65,7 +64,7 @@ public class Player : Entity
         }
         else if (Input.Keyboard.Down(Keys.A))
         {
-            if (IsOnGroundCoyote)
+            if (MayJump > 0)
             {
                 AnimationManager.SetCurrent("player_walk_left");
                 AnimationManager.Play();
@@ -102,9 +101,10 @@ public class Player : Entity
             velocity.X = 0;
         }
 
-        if (Input.Keyboard.Pressed(Keys.Space) && IsOnGroundCoyote)
+        if (Input.Keyboard.Pressed(Keys.Space) && MayJump > 0)
         {
             velocity.Y = -jumpHeight;
+            MayJump = 0;
         }
 
         base.Update();
@@ -115,6 +115,12 @@ public class Player : Entity
 
     public void Draw(Batcher batcher)
     {
+        if (Game.DebugMode)
+        {
+            batcher.RectLine(Rect, 1, Color.Green);
+            batcher.RectLine(CoyoteRect, 1, Color.Yellow);
+        }
+
         batcher.PushMatrix(position, scale, size / 2, rotation);
 
         if (AnimationManager.CurrentAnimation is not null)
