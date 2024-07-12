@@ -7,6 +7,7 @@ namespace Frosty.Scripts.Entities;
 
 public class Entity : GameObject
 {
+    public bool Die { get; set; }
     public bool IsOnGround { get; protected set; }
     public Vector2 velocity;
     public float CoyoteJumpDelay { get; } = 0.1f;
@@ -14,7 +15,7 @@ public class Entity : GameObject
 
     private HashSet<bool> isOnGroundSet = new();
 
-    Entity collidingEntity;
+    GameObject collidingGameObject;
 
     public Rect CoyoteRect
     {
@@ -29,9 +30,9 @@ public class Entity : GameObject
 
     }
 
-    public void ResolveAwayFrom(Entity other)
+    public void ResolveAwayFrom(GameObject other)
     {
-        collidingEntity = other;
+        collidingGameObject = other;
 
         if (CoyoteRect.Overlaps(other.Rect))
         {
@@ -109,7 +110,7 @@ public class Entity : GameObject
         velocity.Y += Game.gravity;
         position += velocity * Time.Delta;
 
-        if (collidingEntity is Entity entity)
+        if (collidingGameObject is Entity entity)
         {            
             if (!Rect.Overlaps(entity.Rect))
             {

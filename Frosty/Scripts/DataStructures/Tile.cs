@@ -3,9 +3,16 @@ using System.Numerics;
 
 namespace Frosty.Scripts.DataStructures;
 
+public enum TileType
+{
+    Solid,
+    Spike
+}
+
 [Serializable]
 public struct Tile
 {
+    public TileType tileType;
     public int x;
     public int y;
 
@@ -14,8 +21,10 @@ public struct Tile
     public int rectWidth;
     public int rectHeight;
 
-    public Tile(Vector2 position, Rect rect)
+    public Tile(Vector2 position, Rect rect, TileType tileType)
     {
+        this.tileType = tileType;
+
         x = (int)position.X;
         y = (int)position.Y;
 

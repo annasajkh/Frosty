@@ -2,6 +2,7 @@
 using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Components;
 using Frosty.Scripts.Core;
+using Frosty.Scripts.DataStructures;
 using Frosty.Scripts.Entities;
 using Frosty.Scripts.Utils;
 using System.Numerics;
@@ -18,12 +19,18 @@ public class Level : Scene
 
     public override void Startup()
     {
-        levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "ground.ase"], Game.TileSize, Game.TileSize, 8, 2, 9));
+        levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 11));
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
 
         player = new Player(new Vector2(100, 100));
 
-        levelEditor.Load(Path.Combine("Assets", "Levels", $"{GetType().Name}.json"));
+        string filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
+
+        if (File.Exists(filePath))
+        {
+            levelEditor.Load(filePath);
+        }
+
     }
 
     public override void Update()
@@ -54,7 +61,17 @@ public class Level : Scene
 
         foreach (var tileObject in levelEditor.Tiles.Values)
         {
-            player.ResolveAwayFrom(tileObject);
+            switch (tileObject.tileType)
+            {
+                case TileType.Solid:
+                    player.ResolveAwayFrom(tileObject);
+                    break;
+                case TileType.Spike:
+
+                    break;
+                default:
+                    break;
+            }
         }
 
         snowing.Update();

@@ -31,7 +31,7 @@ public class LevelEditor
 
         foreach (var tile in Tiles)
         {
-            tilesToSave.Add(new Tile(tile.Value.position, tile.Value.Rect));
+            tilesToSave.Add(new Tile(tile.Value.position, tile.Value.Rect, tile.Value.tileType));
         }
 
         LevelEditorSaveData levelEditorSaveData = new(Tileset.AsepritePath, Tileset.TileWidth, Tileset.TileHeight, Tileset.RowTotal, Tileset.ColumnTotal, Tileset.TotalTiles, tilesToSave);
@@ -62,11 +62,21 @@ public class LevelEditor
 
         if (Input.Mouse.Down(MouseButtons.Left))
         {
-            TileObject tileOject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex)));
+            TileObject tileObject;
 
-            if (!Tiles.ContainsKey(tileOject.GetHashCode()))
+            if (CurrentTileIndex == 9 || CurrentTileIndex == 10)
             {
-                Tiles.Add(tileOject.GetHashCode() ,tileOject);
+                tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex), TileType.Spike));
+            }
+            else
+            {
+                tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex), TileType.Solid));
+            }
+
+
+            if (!Tiles.ContainsKey(tileObject.GetHashCode()))
+            {
+                Tiles.Add(tileObject.GetHashCode() ,tileObject);
             }
         }
 
@@ -109,12 +119,12 @@ public class LevelEditor
 
     public TileObject ToTileObject(Tile tile)
     {
-        return new TileObject(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, Tileset.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight));
+        return new TileObject(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, Tileset.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight), tile.tileType);
     }
 
     public Tile ToTile(TileObject tileObject)
     {
-        return new Tile(tileObject.position, tileObject.Rect);
+        return new Tile(tileObject.position, tileObject.Rect, tileObject.tileType);
     }
 
     public void DrawWhenPaused(Batcher batcher)

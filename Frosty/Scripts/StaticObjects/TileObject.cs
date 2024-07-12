@@ -1,20 +1,22 @@
 ﻿using Foster.Framework;
+using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.DataStructures;
-using Frosty.Scripts.Entities;
 using System.Numerics;
 
 namespace Frosty.Scripts.StaticObjects;
 
-public class TileObject : Entity
+public class TileObject : GameObject
 {
     public Texture Texture { get; }
     public Rect Rect { get; }
+    public TileType tileType;
 
-    public TileObject(Vector2 position, Vector2 scale, Texture texture, Rect rect) : base(position, 0, scale, Vector2.One * Game.TileSize)
+    public TileObject(Vector2 position, Vector2 scale, Texture texture, Rect rect, TileType tileType) : base(position, 0, scale, Vector2.One * Game.TileSize)
     {
         Texture = texture;
         Rect = rect;
+        this.tileType = tileType;
     }
 
     public void Draw(Batcher batcher)
