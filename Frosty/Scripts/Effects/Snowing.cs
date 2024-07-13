@@ -41,7 +41,7 @@ public class Snowing
 
         for (int i = Snows.Count - 1; i >= 0; i--)
         {
-            if (Snows[i].Position.Y > App.Height + 10)
+            if (Snows[i].position.Y > App.Height + 10)
             {
                 Snows.RemoveAt(i);
             }

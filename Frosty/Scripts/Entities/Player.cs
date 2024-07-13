@@ -1,6 +1,7 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Components;
 using Frosty.Scripts.Core;
+using Frosty.Scripts.Effects;
 using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
@@ -13,7 +14,7 @@ enum PreviousFacing
 
 public class Player : Entity
 {
-    float speed = 300;
+    float maxSpeed = 300;
     float jumpHeight = 500;
 
     private static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Player", "player_idle_left.ase"));
@@ -26,6 +27,10 @@ public class Player : Entity
 
     public AnimationManager AnimationManager { get; } = new();
 
+    List<PlayerDieParticle> playerDieParticles = new();
+
+    bool spawnDieParticle;
+
     public Player(Vector2 position) : base(position, 0, Vector2.One * Game.Scale, new Vector2(playerIdleLeft.Width, playerIdleLeft.Height))
     {
         AnimationManager.AddAnimation("player_idle_left", new Animation(playerIdleLeft, playerIdleLeft.Width, playerIdleLeft.Height, 0.5f, true));
@@ -35,12 +40,32 @@ public class Player : Entity
         AnimationManager.AddAnimation("player_walk_left", new Animation(playerWalkLeft, playerWalkLeft.Width, playerWalkLeft.Height, 0.25f, true));
 
         previousFacing = PreviousFacing.Right;
+
     }
 
     public override void Update()
     {
-        if (Die)
+        foreach (var playerDieParticle in playerDieParticles)
         {
+            playerDieParticle.Update();
+        }
+
+        for (int i = playerDieParticles.Count - 1; i >= 0; i--)
+        {
+            if (playerDieParticles[i].Destroyed)
+            {
+                playerDieParticles.RemoveAt(i);
+            }
+        }
+
+        if (Die && !spawnDieParticle)
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                playerDieParticles.Add(new PlayerDieParticle(position, new Vector2(1, 1), 0.3f, 200));
+            }
+
+            spawnDieParticle = true;
             return;
         }
 
@@ -64,7 +89,7 @@ public class Player : Entity
                 AnimationManager.Stop();
             }
 
-            velocity.X = speed;
+            velocity.X += Speed;
             previousFacing = PreviousFacing.Right;
         }
         else if (Input.Keyboard.Down(Keys.A))
@@ -87,7 +112,7 @@ public class Player : Entity
                 AnimationManager.Stop();
             }
 
-            velocity.X = -speed;
+            velocity.X += -Speed;
             previousFacing = PreviousFacing.Left;
         }
         else
@@ -103,7 +128,6 @@ public class Player : Entity
             }
 
             AnimationManager.Play();
-            velocity.X = 0;
         }
 
         if (Input.Keyboard.Pressed(Keys.Space) && MayJump > 0)
@@ -112,8 +136,9 @@ public class Player : Entity
             MayJump = 0;
         }
 
-        base.Update();
+        velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
 
+        base.Update();
         AnimationManager.Update();
     } 
 
@@ -124,14 +149,22 @@ public class Player : Entity
             batcher.RectLine(CoyoteRect, 1, Color.Yellow);
         }
 
-        batcher.PushMatrix(position, scale, size / 2, rotation);
-
-        if (AnimationManager.CurrentAnimation is not null)
+        if (!Die)
         {
-            batcher.Image(AnimationManager.CurrentAnimation.CurrentFrame, Color.White);
+            batcher.PushMatrix(position, scale, size / 2, rotation);
+
+            if (AnimationManager.CurrentAnimation is not null)
+            {
+                batcher.Image(AnimationManager.CurrentAnimation.CurrentFrame, Color.White);
+            }
+
+            batcher.PopMatrix();
         }
 
-        batcher.PopMatrix();
+        foreach (var playerDieParticle in playerDieParticles)
+        {
+            playerDieParticle.Draw(batcher);
+        }
 
         base.Draw(batcher);
     }

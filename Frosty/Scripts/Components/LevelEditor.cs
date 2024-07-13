@@ -64,14 +64,18 @@ public class LevelEditor
         {
             TileObject tileObject;
 
+            TileType tileType = TileType.Solid;
+
             if (CurrentTileIndex == 9 || CurrentTileIndex == 10)
             {
-                tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex), TileType.Spike));
+                tileType = TileType.Spike;
             }
-            else
+            else if(CurrentTileIndex == 11)
             {
-                tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex), TileType.Solid));
+                tileType = TileType.Ice;
             }
+
+            tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex), tileType));
 
 
             if (!Tiles.ContainsKey(tileObject.GetHashCode()))

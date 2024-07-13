@@ -1,39 +1,33 @@
 ﻿using Foster.Framework;
+using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
 using System.Numerics;
 
 namespace Frosty.Scripts.Effects;
 
-public class Snow
+public class Snow : GameObject
 {
-    public Vector2 Position { get; private set; }
-    public float Size { get; }
     public float FallingSpeed { get; }
     int opacity;
 
-    float angle;
-
-    public Snow(Vector2 position, float size, float fallingSpeed)
+    public Snow(Vector2 position, float size, float fallingSpeed) : base(position, 0, Vector2.One, Vector2.One * size)
     {
-        Position = position;
-        Size = size;
         FallingSpeed = fallingSpeed;
 
-        angle = Game.Random.NextSingle() * 360;
+        rotation = Game.Random.NextSingle() * 360;
         opacity = Game.Random.Next() % 250 + 5;
     }
 
     public void Update()
     {
-        Position += Vector2.UnitY * FallingSpeed * Time.Delta;
-
-        angle += Time.Delta;
+        position += Vector2.UnitY * FallingSpeed * Time.Delta;
+        rotation += Time.Delta;
     }
 
     public void Draw(Batcher batcher)
     {
-        batcher.PushMatrix(Position, Vector2.One * 3, new Vector2(Size, Size) / 2, angle);
-        batcher.Rect(Vector2.Zero, Vector2.One * Size, new Color(opacity, opacity, opacity, opacity));
+        batcher.PushMatrix(position, Vector2.One * 3, new Vector2(size.X, size.Y) / 2, rotation);
+        batcher.Rect(Vector2.Zero, Vector2.One * size, new Color(opacity, opacity, opacity, opacity));
         batcher.PopMatrix();
     }
 }

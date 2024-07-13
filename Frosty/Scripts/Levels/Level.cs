@@ -18,12 +18,14 @@ public class Level : Scene
     protected LevelEditor levelEditor;
     protected Player player;
     protected Snowing snowing;
+    public float transitionOpacity;
 
     Timer playerDyingTimer;
 
     public override void Startup()
     {
-        levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 11));
+        transitionOpacity = 1;
+        levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12));
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
 
         player = new Player(new Vector2(100, 100));
@@ -77,18 +79,36 @@ public class Level : Scene
             switch (tileObject.tileType)
             {
                 case TileType.Solid:
+                    if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+                    {
+                        player.friction = Game.entityFriction;
+                    }
+
                     player.ResolveAwayFrom(tileObject);
                     break;
+
                 case TileType.Spike:
                     if (player.Rect.Overlaps(tileObject.Rect))
                     {
                         player.Die = true;
                     }
                     break;
+
+                case TileType.Ice:
+                    if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+                    {
+                        player.friction = Game.entityOnIceFriction;
+                    }
+
+                    player.ResolveAwayFrom(tileObject);
+                    break;
+
                 default:
                     break;
             }
         }
+
+        Console.WriteLine(player.friction);
 
         if (player.position.Y > App.Height)
         {
@@ -97,6 +117,15 @@ public class Level : Scene
 
         if (player.Die)
         {
+            if (transitionOpacity < 0.9)
+            {
+                transitionOpacity += Time.Delta;
+            }
+            else
+            {
+                transitionOpacity = 1;
+            }
+
             playerDyingTimer.Start();
         }
 
@@ -125,6 +154,20 @@ public class Level : Scene
             levelEditor.DrawWhenPaused(batcher);
             Helper.DrawTextCentered("Paused", new Vector2(App.Width / 2, App.Height / 2), Color.White, Game.ArialFont, batcher);
         }
+
+        if (!player.Die)
+        {
+            if (transitionOpacity > 0.1)
+            {
+                transitionOpacity -= Time.Delta;
+            }
+            else
+            {
+                transitionOpacity = 0;
+            }
+        }
+
+        batcher.Rect(0, 0, App.Width, App.Height, new Color(0, 0, 0, transitionOpacity));
     }
 
     public override void Shutdown()

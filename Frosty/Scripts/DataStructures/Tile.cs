@@ -6,7 +6,8 @@ namespace Frosty.Scripts.DataStructures;
 public enum TileType
 {
     Solid,
-    Spike
+    Spike,
+    Ice
 }
 
 [Serializable]

@@ -28,4 +28,21 @@ public static class Helper
         batcher.Text(font, text, Vector2.Zero, color);
         batcher.PopMatrix();
     }
+
+    public static bool IsOverlapOnGround(Rect first, Rect second)
+    {
+        if (!first.Overlaps(second))
+        {
+            return false;
+        }
+
+        Rect collisionResult = first.OverlapRect(second);
+
+        if (collisionResult.Width > collisionResult.Height && first.Y < second.Y)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }

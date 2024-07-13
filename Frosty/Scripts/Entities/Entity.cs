@@ -1,12 +1,16 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
+using Frosty.Scripts.Utils;
 using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
 
 public class Entity : GameObject
 {
+    public float friction = 0.1f;
+    public float Speed { get; private set; } = 500;
+
     public bool Die { get; set; }
     public bool IsOnGround { get; protected set; }
     public Vector2 velocity;
@@ -34,14 +38,9 @@ public class Entity : GameObject
     {
         collidingGameObject = other;
 
-        if (CoyoteRect.Overlaps(other.Rect))
+        if (Helper.IsOverlapOnGround(CoyoteRect, other.Rect))
         {
-            Rect collisionCoyoteResult = CoyoteRect.OverlapRect(other.Rect);
-
-            if (collisionCoyoteResult.Width > collisionCoyoteResult.Height && CoyoteRect.Y < other.Rect.Y)
-            {
-                isOnGroundSet.Add(true); 
-            }
+            isOnGroundSet.Add(true);
         }
 
         if (!Rect.Overlaps(other.Rect))
@@ -95,6 +94,7 @@ public class Entity : GameObject
         }
         else
         {
+            friction = Game.entityFriction;
             IsOnGround = false;
         }
 
@@ -107,6 +107,7 @@ public class Entity : GameObject
 
         MayJump -= Time.Delta;
 
+        velocity.X *= 1 - friction;
         velocity.Y += Game.gravity;
         position += velocity * Time.Delta;
 
