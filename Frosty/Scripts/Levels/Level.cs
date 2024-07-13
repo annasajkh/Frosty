@@ -3,9 +3,11 @@ using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Components;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.DataStructures;
+using Frosty.Scripts.Effects;
 using Frosty.Scripts.Entities;
 using Frosty.Scripts.Utils;
 using System.Numerics;
+using Timer = Frosty.Scripts.Components.Timer;
 
 namespace Frosty.Scripts.Levels;
 
@@ -16,6 +18,8 @@ public class Level : Scene
     protected LevelEditor levelEditor;
     protected Player player;
     protected Snowing snowing;
+
+    Timer playerDyingTimer;
 
     public override void Startup()
     {
@@ -31,6 +35,13 @@ public class Level : Scene
             levelEditor.Load(filePath);
         }
 
+        playerDyingTimer = new Timer(1, true);
+        
+        playerDyingTimer.OnTimeout += () =>
+        {
+            Startup();
+            player.Die = false;
+        };
     }
 
     public override void Update()
@@ -52,6 +63,8 @@ public class Level : Scene
             return;
         }
 
+        playerDyingTimer.Update();
+
         if (Input.Keyboard.Pressed(Keys.Escape))
         {
             Game.SceneManager.ChangeScene("MainMenu");
@@ -67,11 +80,24 @@ public class Level : Scene
                     player.ResolveAwayFrom(tileObject);
                     break;
                 case TileType.Spike:
-
+                    if (player.Rect.Overlaps(tileObject.Rect))
+                    {
+                        player.Die = true;
+                    }
                     break;
                 default:
                     break;
             }
+        }
+
+        if (player.position.Y > App.Height)
+        {
+            player.Die = true;
+        }
+
+        if (player.Die)
+        {
+            playerDyingTimer.Start();
         }
 
         snowing.Update();

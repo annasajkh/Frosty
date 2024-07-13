@@ -1,8 +1,9 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Core;
 using System.Numerics;
+using Timer = Frosty.Scripts.Components.Timer;
 
-namespace Frosty.Scripts.Components;
+namespace Frosty.Scripts.Effects;
 
 public class Snowing
 {
@@ -23,7 +24,7 @@ public class Snowing
 
         timer.OnTimeout += () =>
         {
-            Snows.Add(new Snow(Position + new Vector2(Game.Random.Next((int)(Position.X), (int)(Position.X + Wide)), -10), Game.Random.Next(1, 2), Game.Random.Next(50, 200)));
+            Snows.Add(new Snow(Position + new Vector2(Game.Random.Next((int)Position.X, (int)(Position.X + Wide)), -10), Game.Random.Next(1, 2), Game.Random.Next(50, 200)));
         };
 
         timer.Start();

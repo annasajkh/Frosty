@@ -114,7 +114,6 @@ public class Entity : GameObject
         {            
             if (!Rect.Overlaps(entity.Rect))
             {
-
                 isOnGroundSet.Add(false);
             }
         }

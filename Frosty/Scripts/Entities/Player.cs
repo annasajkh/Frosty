@@ -39,6 +39,11 @@ public class Player : Entity
 
     public override void Update()
     {
+        if (Die)
+        {
+            return;
+        }
+
         if (Input.Keyboard.Down(Keys.D))
         {
             if (MayJump > 0)
@@ -110,14 +115,12 @@ public class Player : Entity
         base.Update();
 
         AnimationManager.Update();
-        
     } 
 
     public void Draw(Batcher batcher)
     {
         if (Game.DebugMode)
         {
-            batcher.RectLine(Rect, 1, Color.Green);
             batcher.RectLine(CoyoteRect, 1, Color.Yellow);
         }
 
@@ -129,5 +132,7 @@ public class Player : Entity
         }
 
         batcher.PopMatrix();
+
+        base.Draw(batcher);
     }
 }

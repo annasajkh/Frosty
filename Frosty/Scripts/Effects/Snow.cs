@@ -2,7 +2,7 @@
 using Frosty.Scripts.Core;
 using System.Numerics;
 
-namespace Frosty.Scripts.Components;
+namespace Frosty.Scripts.Effects;
 
 public class Snow
 {

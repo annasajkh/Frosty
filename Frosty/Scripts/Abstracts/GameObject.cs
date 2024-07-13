@@ -1,4 +1,5 @@
 ﻿using Foster.Framework;
+using Frosty.Scripts.Core;
 using System.Numerics;
 
 namespace Frosty.Scripts.Abstracts;
@@ -24,5 +25,13 @@ public class GameObject
         this.rotation = rotation;
         this.scale = scale;
         this.size = size;
+    }
+
+    public virtual void Draw(Batcher batcher)
+    {
+        if (Game.DebugMode)
+        {
+            batcher.RectLine(Rect, 1, Color.Green);
+        }
     }
 }

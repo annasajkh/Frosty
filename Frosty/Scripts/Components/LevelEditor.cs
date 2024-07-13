@@ -17,7 +17,7 @@ public class LevelEditor
     public Tileset? Tileset { get; private set; }
     public Dictionary<int, TileObject> Tiles { get; } = new();
 
-    bool isDeleting = false;
+    bool isDeleting;
 
     public LevelEditor(bool editing, Tileset? tileset = null)
     {
@@ -31,7 +31,7 @@ public class LevelEditor
 
         foreach (var tile in Tiles)
         {
-            tilesToSave.Add(new Tile(tile.Value.position, tile.Value.Rect, tile.Value.tileType));
+            tilesToSave.Add(new Tile(tile.Value.position, tile.Value.TextureRect, tile.Value.tileType));
         }
 
         LevelEditorSaveData levelEditorSaveData = new(Tileset.AsepritePath, Tileset.TileWidth, Tileset.TileHeight, Tileset.RowTotal, Tileset.ColumnTotal, Tileset.TotalTiles, tilesToSave);
@@ -124,7 +124,7 @@ public class LevelEditor
 
     public Tile ToTile(TileObject tileObject)
     {
-        return new Tile(tileObject.position, tileObject.Rect, tileObject.tileType);
+        return new Tile(tileObject.position, tileObject.TextureRect, tileObject.tileType);
     }
 
     public void DrawWhenPaused(Batcher batcher)

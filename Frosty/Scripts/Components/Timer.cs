@@ -7,7 +7,7 @@ public sealed class Timer
     public float WaitTime { get; set; }
     public bool Oneshot { get; set; }
     public float TimeLeft { get; private set; }
-    public bool Paused { get; private set; }
+    public bool Paused { get; private set; } = true;
 
     public event Action? OnTimeout;
 

@@ -9,21 +9,23 @@ namespace Frosty.Scripts.StaticObjects;
 public class TileObject : GameObject
 {
     public Texture Texture { get; }
-    public Rect Rect { get; }
+    public Rect TextureRect { get; }
     public TileType tileType;
 
     public TileObject(Vector2 position, Vector2 scale, Texture texture, Rect rect, TileType tileType) : base(position, 0, scale, Vector2.One * Game.TileSize)
     {
         Texture = texture;
-        Rect = rect;
+        TextureRect = rect;
         this.tileType = tileType;
     }
 
     public void Draw(Batcher batcher)
     {
         batcher.PushMatrix(position, scale, size / 2, rotation);
-        batcher.Image(Texture, Rect, Vector2.Zero, Color.White);
+        batcher.Image(Texture, TextureRect, Vector2.Zero, Color.White);
         batcher.PopMatrix();
+
+        base.Draw(batcher);
     }
 
     public override int GetHashCode()
