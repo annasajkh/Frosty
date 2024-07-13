@@ -13,6 +13,7 @@ public class PlayerDieParticle : GameObject
 
     float speed;
     float rotationDir;
+
     Timer destroyTimer;
     Vector2 velocity;
 

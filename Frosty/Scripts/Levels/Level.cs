@@ -108,8 +108,6 @@ public class Level : Scene
             }
         }
 
-        Console.WriteLine(player.friction);
-
         if (player.position.Y > App.Height)
         {
             player.Die = true;
