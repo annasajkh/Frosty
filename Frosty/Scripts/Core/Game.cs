@@ -1,4 +1,5 @@
 ﻿using Foster.Framework;
+using Frosty.Scripts.Audio;
 using Frosty.Scripts.Levels;
 using Frosty.Scripts.Managers;
 using Frosty.Scripts.Scenes;
@@ -20,6 +21,7 @@ public sealed class Game : Module
     public static float gravity = 20;
     public static Random Random { get; } = new(Time.Now.Milliseconds);
     public static SceneManager SceneManager { get; private set; } = new(initialSceneName: "MainMenu", initialScene: new MainMenu());
+    public static SoundEffectPlayer SoundEffectPlayer { get; private set; } = new SoundEffectPlayer();
 
     Batcher batcher = new();
 

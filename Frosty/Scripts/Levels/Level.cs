@@ -82,6 +82,7 @@ public class Level : Scene
                     if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
                     {
                         player.friction = Game.entityFriction;
+                        player.PlayWalkSound(tileObject.tileType);
                     }
 
                     player.ResolveAwayFrom(tileObject);
@@ -98,6 +99,7 @@ public class Level : Scene
                     if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
                     {
                         player.friction = Game.entityOnIceFriction;
+                        player.PlayWalkSound(tileObject.tileType);
                     }
 
                     player.ResolveAwayFrom(tileObject);
