@@ -19,11 +19,22 @@ public class TileObject : GameObject
         this.tileType = tileType;
     }
 
-    public void Draw(Batcher batcher)
+    public override void Draw(Batcher batcher)
     {
         batcher.PushMatrix(position, scale, size / 2, rotation);
         batcher.Image(Texture, TextureRect, Vector2.Zero, Color.White);
         batcher.PopMatrix();
+
+        if (tileType == TileType.Spike)
+        {
+            if (Game.DebugMode)
+            {
+                Rect spikeRect = new Rect(Rect.X + 10, Rect.Y + 5, Rect.Width - 20, Rect.Height - 10);
+
+                batcher.RectLine(spikeRect, 1, Color.Green);
+                return;
+            }
+        }
 
         base.Draw(batcher);
     }

@@ -21,16 +21,18 @@ public class Level : Scene
     public float transitionOpacity;
 
     Timer playerDyingTimer;
+    Timer autoSaveTimer;
+
+    string filePath;
 
     public override void Startup()
     {
         transitionOpacity = 1;
+        filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
         levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12));
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
 
         player = new Player(new Vector2(100, 100));
-
-        string filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
 
         if (File.Exists(filePath))
         {
@@ -44,13 +46,44 @@ public class Level : Scene
             Startup();
             player.Die = false;
         };
+
+        autoSaveTimer = new Timer(1, false);
+        autoSaveTimer.OnTimeout += () =>
+        {
+            SaveLevel();
+        };
+
+        autoSaveTimer.Start();
+    }
+
+    public void SaveLevel()
+    {
+        levelEditor.Save(Path.Combine("Assets", "Levels", $"{GetType().Name}.json"));
+
+#if DEBUG
+        try
+        {
+            levelEditor.Save(Path.Combine("..", "..", "..", "Assets", "Levels", $"{GetType().Name}.json"));
+        }
+        finally
+        {
+
+        }
+#endif
+        if (File.Exists(filePath))
+        {
+            levelEditor.Tiles.Clear();
+            levelEditor.Load(filePath);
+        }
     }
 
     public override void Update()
     {
-        if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Down(Keys.S))
+        autoSaveTimer.Update();
+
+        if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Pressed(Keys.S))
         {
-            levelEditor.Save(Path.Combine("..", "..", "..", "Assets", "Levels", $"{GetType().Name}.json"));
+            SaveLevel();
         }
 
         if (Input.Keyboard.Pressed(Keys.P))
@@ -76,20 +109,36 @@ public class Level : Scene
 
         foreach (var tileObject in levelEditor.Tiles.Values)
         {
+            if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+            {
+                if (!player.playSoundWalkOnce)
+                {
+                    player.PlayWalkSound(tileObject.tileType);
+                    player.playSoundWalkOnce = true;
+                }
+
+                if (player.shouldPlayWalkSound && !player.Die)
+                {
+                    player.PlayWalkSound(tileObject.tileType);
+                    player.shouldPlayWalkSound = false;
+                }
+            }
+
             switch (tileObject.tileType)
             {
                 case TileType.Solid:
                     if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
                     {
                         player.friction = Game.entityFriction;
-                        player.PlayWalkSound(tileObject.tileType);
                     }
 
                     player.ResolveAwayFrom(tileObject);
                     break;
 
                 case TileType.Spike:
-                    if (player.Rect.Overlaps(tileObject.Rect))
+                    Rect spikeRect = new Rect(tileObject.Rect.X + 10, tileObject.Rect.Y + 5, tileObject.Rect.Width - 20, tileObject.Rect.Height - 10);
+
+                    if (player.Rect.Overlaps(spikeRect))
                     {
                         player.Die = true;
                     }
@@ -99,7 +148,6 @@ public class Level : Scene
                     if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
                     {
                         player.friction = Game.entityOnIceFriction;
-                        player.PlayWalkSound(tileObject.tileType);
                     }
 
                     player.ResolveAwayFrom(tileObject);

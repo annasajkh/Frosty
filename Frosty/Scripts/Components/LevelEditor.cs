@@ -77,7 +77,6 @@ public class LevelEditor
 
             tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex), tileType));
 
-
             if (!Tiles.ContainsKey(tileObject.GetHashCode()))
             {
                 Tiles.Add(tileObject.GetHashCode() ,tileObject);

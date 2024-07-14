@@ -8,7 +8,7 @@ namespace Frosty.Scripts.Audio;
 /// </summary>
 public class SoundEffect : Audio, IDisposable
 {
-    public static SoundEffect Load(string filePath, int volume = 50, bool loop = false)
+    public static SoundEffect Load(string filePath, int volume = 10, bool loop = false)
     {
         return new SoundEffect(SDL_mixer.Mix_LoadWAV(filePath), volume, loop);
     }

@@ -15,7 +15,6 @@ public class SoundEffectPlayer
     {
         if (SoundEffect is SoundEffect soundEffect)
         {
-
             int volumeError = SDL_mixer.Mix_VolumeChunk(soundEffect.Handle, soundEffect.Volume);
             if (volumeError == 0)
             {

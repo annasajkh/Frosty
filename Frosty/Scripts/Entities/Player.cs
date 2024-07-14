@@ -17,17 +17,19 @@ enum PreviousFacing
 public class Player : Entity
 {
     public AnimationManager AnimationManager { get; } = new();
+    public bool shouldPlayWalkSound;
+    public bool playSoundWalkOnce;
 
     float maxSpeed = 300;
     float jumpHeight = 500;
     bool spawnDieParticle;
-    bool shouldPlayWalkSound;
     List<PlayerDieParticle> playerDieParticles = new();
     PreviousFacing previousFacing;
 
     SoundEffect[] playerWalkOnSnowSounds;
     SoundEffect[] playerWalkOnIceSounds;
     SoundEffect playerJump;
+    SoundEffect playerDied;
 
     private static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Player", "Graphics", "player_idle_left.ase"));
     private static Aseprite playerIdleRight = new Aseprite(Path.Combine("Assets", "Player", "Graphics", "player_idle_right.ase"));
@@ -45,15 +47,16 @@ public class Player : Entity
             shouldPlayWalkSound = true;
         };
 
-        playerWalkOnSnowSounds = [SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_0.ogg")),
-                                  SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_1.ogg")),
-                                  SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_2.ogg"))];
+        playerWalkOnSnowSounds = [SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_0.ogg"), volume: 100),
+                                  SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_1.ogg"), volume: 100),
+                                  SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_2.ogg"), volume: 100)];
 
-        playerWalkOnIceSounds = [SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_0.ogg")),
-                                 SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_1.ogg")),
-                                 SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg"))];
+        playerWalkOnIceSounds = [SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_0.ogg"), volume: 255),
+                                 SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_1.ogg"), volume: 255),
+                                 SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg"), volume: 255)];
 
-        playerJump = SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "player_jump.ogg"));
+        playerJump = SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "player_jump.ogg"), volume: 100);
+        playerDied = SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "player_died.ogg"), volume: 255);
 
         AnimationManager.AddAnimation("player_idle_left", new Animation(playerIdleLeft, playerIdleLeft.Width, playerIdleLeft.Height, 0.5f, true));
         AnimationManager.AddAnimation("player_idle_right", new Animation(playerIdleRight, playerIdleRight.Width, playerIdleRight.Height, 0.5f, true));
@@ -66,25 +69,20 @@ public class Player : Entity
 
     public void PlayWalkSound(TileType tileType)
     {
-        if (shouldPlayWalkSound && !Die)
+        switch (tileType)
         {
-            switch (tileType)
-            {
-                case TileType.Solid:
-                    Game.SoundEffectPlayer.SetSource(playerWalkOnSnowSounds[Game.Random.Next() % playerWalkOnSnowSounds.Length]);
-                    Game.SoundEffectPlayer.Play();
-                    break;
-                case TileType.Spike:
-                    break;
-                case TileType.Ice:
-                    Game.SoundEffectPlayer.SetSource(playerWalkOnIceSounds[Game.Random.Next() % playerWalkOnIceSounds.Length]);
-                    Game.SoundEffectPlayer.Play();
-                    break;
-                default:
-                    break;
-            }
-
-            shouldPlayWalkSound = false;
+            case TileType.Solid:
+                Game.SoundEffectPlayer.SetSource(playerWalkOnSnowSounds[Game.Random.Next() % playerWalkOnSnowSounds.Length]);
+                Game.SoundEffectPlayer.Play();
+                break;
+            case TileType.Spike:
+                break;
+            case TileType.Ice:
+                Game.SoundEffectPlayer.SetSource(playerWalkOnIceSounds[Game.Random.Next() % playerWalkOnIceSounds.Length]);
+                Game.SoundEffectPlayer.Play();
+                break;
+            default:
+                break;
         }
     }
 
@@ -105,13 +103,24 @@ public class Player : Entity
 
         if (Die && !spawnDieParticle)
         {
+            Game.SoundEffectPlayer.SetSource(playerDied);
+            Game.SoundEffectPlayer.Play();
+
             for (int i = 0; i < 20; i++)
             {
                 playerDieParticles.Add(new PlayerDieParticle(position, new Vector2(1, 1), 0.3f, 200));
             }
-
             spawnDieParticle = true;
+        }
+
+        if (Die)
+        {
             return;
+        }
+
+        if (!IsOnGround)
+        {
+            playSoundWalkOnce = false;
         }
 
         walkTimer.Update();

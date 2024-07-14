@@ -1,5 +1,4 @@
-﻿using Frosty.Scripts.Audio;
-using Frosty.Scripts.Bindings.SDL2;
+﻿using Frosty.Scripts.Bindings.SDL2;
 
 namespace Frosty.Scripts.Audio;
 
