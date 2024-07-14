@@ -3,6 +3,8 @@ name: Publish .NET 8 Desktop App
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - "v*"
   pull_request:
     branches: [ "main" ]
 
@@ -17,11 +19,13 @@ jobs:
         dotnet-version: 8.0.x
     - name: Publish Windows
       run: dotnet publish ./Frosty/Frosty.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/windows
+    - name: Zip Windows artifact
+      run: Compress-Archive -Path ./publish/windows/* -DestinationPath ./Frosty-windows.zip
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v3
       with:
         name: windows-app
-        path: ./publish/windows
+        path: ./Frosty-windows.zip
 
   publish-linux:
     runs-on: ubuntu-latest
@@ -33,8 +37,46 @@ jobs:
         dotnet-version: 8.0.x
     - name: Publish Linux
       run: dotnet publish ./Frosty/Frosty.csproj -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/linux
+    - name: Zip Linux artifact
+      run: zip -r ./Frosty-linux.zip ./publish/linux
     - name: Upload Linux artifact
       uses: actions/upload-artifact@v3
       with:
         name: linux-app
-        path: ./publish/linux
+        path: ./Frosty-linux.zip
+
+  create-release:
+    needs: [publish-windows, publish-linux]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Windows Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./windows-app/Frosty-windows.zip
+          asset_name: Frosty-windows.zip
+          asset_content_type: application/zip
+      - name: Upload Linux Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./linux-app/Frosty-linux.zip
+          asset_name: Frosty-linux.zip
+          asset_content_type: application/zip
