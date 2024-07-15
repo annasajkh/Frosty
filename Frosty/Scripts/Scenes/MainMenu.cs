@@ -25,7 +25,7 @@ public class MainMenu : Scene
     {
         Graphics.Clear(Color.CornflowerBlue);
 
-        Helper.DrawTextCentered("Press Enter to Start", new Vector2(App.Width / 2, App.Height / 2), Color.White, Game.ArialFont, batcher);
+        Helper.DrawTextCentered("Press Enter to Start", new Vector2(App.Width / 2, App.Height / 2), Color.White, Game.M5x7Menu, batcher);
     }
 
     public override void Shutdown()

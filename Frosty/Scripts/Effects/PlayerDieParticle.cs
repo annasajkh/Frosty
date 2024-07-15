@@ -41,10 +41,12 @@ public class PlayerDieParticle : GameObject
         rotation += rotationDir * Time.Delta * 10;
     }
 
-    public void Draw(Batcher batcher)
+    public override void Draw(Batcher batcher)
     {
         batcher.PushMatrix(position, Vector2.One * 3, new Vector2(size.X, size.Y) / 2, rotation);
         batcher.Rect(Vector2.Zero, Vector2.One * size, Color.White);
         batcher.PopMatrix();
+
+        base.Draw(batcher);
     }
 }

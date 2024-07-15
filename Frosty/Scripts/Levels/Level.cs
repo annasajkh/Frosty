@@ -25,8 +25,11 @@ public class Level : Scene
 
     string filePath;
 
+    DialogBox dialogBox;
+
     public override void Startup()
     {
+        dialogBox = new DialogBox(new Vector2(App.Width / 2, App.Height - 70), 10, 1f);
         transitionOpacity = 1;
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
         levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12));
@@ -54,6 +57,7 @@ public class Level : Scene
         };
 
         autoSaveTimer.Start();
+        dialogBox.Play(["Hello", "My name is Annas"]);
     }
 
     public void SaveLevel()
@@ -67,7 +71,7 @@ public class Level : Scene
         }
         finally
         {
-
+            // Ignore the fucking error
         }
 #endif
         if (File.Exists(filePath))
@@ -93,91 +97,90 @@ public class Level : Scene
 
         levelEditor.Update();
 
-        if (Paused)
+        if (!Paused)
         {
-            return;
-        }
+            dialogBox.Update();
+            playerDyingTimer.Update();
 
-        playerDyingTimer.Update();
-
-        if (Input.Keyboard.Pressed(Keys.Escape))
-        {
-            Game.SceneManager.ChangeScene("MainMenu");
-        }
-
-        player.Update();
-
-        foreach (var tileObject in levelEditor.Tiles.Values)
-        {
-            if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+            if (Input.Keyboard.Pressed(Keys.Escape))
             {
-                if (!player.playSoundWalkOnce)
+                Game.SceneManager.ChangeScene("MainMenu");
+            }
+
+            player.Update();
+
+            foreach (var tileObject in levelEditor.Tiles.Values)
+            {
+                if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
                 {
-                    player.PlayWalkSound(tileObject.tileType);
-                    player.playSoundWalkOnce = true;
+                    if (!player.playSoundWalkOnce)
+                    {
+                        player.PlayWalkSound(tileObject.tileType);
+                        player.playSoundWalkOnce = true;
+                    }
+
+                    if (player.shouldPlayWalkSound && !player.Die)
+                    {
+                        player.PlayWalkSound(tileObject.tileType);
+                        player.shouldPlayWalkSound = false;
+                    }
                 }
 
-                if (player.shouldPlayWalkSound && !player.Die)
+                switch (tileObject.tileType)
                 {
-                    player.PlayWalkSound(tileObject.tileType);
-                    player.shouldPlayWalkSound = false;
+                    case TileType.Solid:
+                        if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+                        {
+                            player.friction = Game.entityFriction;
+                        }
+
+                        player.ResolveAwayFrom(tileObject);
+                        break;
+
+                    case TileType.Spike:
+                        Rect spikeRect = new Rect(tileObject.Rect.X + 10, tileObject.Rect.Y + 5, tileObject.Rect.Width - 20, tileObject.Rect.Height - 10);
+
+                        if (player.Rect.Overlaps(spikeRect))
+                        {
+                            player.Die = true;
+                        }
+                        break;
+
+                    case TileType.Ice:
+                        if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+                        {
+                            player.friction = Game.entityOnIceFriction;
+                        }
+
+                        player.ResolveAwayFrom(tileObject);
+                        break;
+
+                    default:
+                        break;
                 }
             }
 
-            switch (tileObject.tileType)
+            if (player.position.Y > App.Height)
             {
-                case TileType.Solid:
-                    if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
-                    {
-                        player.friction = Game.entityFriction;
-                    }
-
-                    player.ResolveAwayFrom(tileObject);
-                    break;
-
-                case TileType.Spike:
-                    Rect spikeRect = new Rect(tileObject.Rect.X + 10, tileObject.Rect.Y + 5, tileObject.Rect.Width - 20, tileObject.Rect.Height - 10);
-
-                    if (player.Rect.Overlaps(spikeRect))
-                    {
-                        player.Die = true;
-                    }
-                    break;
-
-                case TileType.Ice:
-                    if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
-                    {
-                        player.friction = Game.entityOnIceFriction;
-                    }
-
-                    player.ResolveAwayFrom(tileObject);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        if (player.position.Y > App.Height)
-        {
-            player.Die = true;
-        }
-
-        if (player.Die)
-        {
-            if (transitionOpacity < 0.9)
-            {
-                transitionOpacity += Time.Delta;
-            }
-            else
-            {
-                transitionOpacity = 1;
+                player.Die = true;
             }
 
-            playerDyingTimer.Start();
-        }
+            if (player.Die)
+            {
+                if (transitionOpacity < 0.9)
+                {
+                    transitionOpacity += Time.Delta;
+                }
+                else
+                {
+                    transitionOpacity = 1;
+                }
 
-        snowing.Update();
+                playerDyingTimer.Start();
+            }
+
+            snowing.Update();
+        }
     }
 
     public override void Render(Batcher batcher)
@@ -199,8 +202,7 @@ public class Level : Scene
 
         if (Paused)
         {
-            levelEditor.DrawWhenPaused(batcher);
-            Helper.DrawTextCentered("Paused", new Vector2(App.Width / 2, App.Height / 2), Color.White, Game.ArialFont, batcher);
+            transitionOpacity = 0.75f;
         }
 
         if (!player.Die)
@@ -215,7 +217,15 @@ public class Level : Scene
             }
         }
 
+        dialogBox.Draw(batcher);
+
         batcher.Rect(0, 0, App.Width, App.Height, new Color(0, 0, 0, transitionOpacity));
+
+        if (Paused)
+        { 
+            levelEditor.DrawWhenPaused(batcher);
+            Helper.DrawTextCentered("Paused", new Vector2(App.Width / 2, App.Height / 2), Color.White, Game.M5x7Menu, batcher);
+        }
     }
 
     public override void Shutdown()

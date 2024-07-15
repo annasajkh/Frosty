@@ -113,106 +113,104 @@ public class Player : Entity
             spawnDieParticle = true;
         }
 
-        if (Die)
+        if (!Die)
         {
-            return;
-        }
-
-        if (!IsOnGround)
-        {
-            playSoundWalkOnce = false;
-        }
-
-        walkTimer.Update();
-
-        if (Input.Keyboard.Down(Keys.D))
-        {
-            if (MayJump > 0)
-            {
-                AnimationManager.SetCurrent("player_walk_right");
-                AnimationManager.Play();
-            }
-
             if (!IsOnGround)
             {
-                AnimationManager.SetCurrent("player_walk_right");
+                playSoundWalkOnce = false;
+            }
 
-                if (AnimationManager.CurrentAnimation is not null)
+            walkTimer.Update();
+
+            if (Input.Keyboard.Down(Keys.D))
+            {
+                if (MayJump > 0)
                 {
-                    AnimationManager.CurrentAnimation.FrameIndex = AnimationManager.CurrentAnimation.TotalFrames - 1;
+                    AnimationManager.SetCurrent("player_walk_right");
+                    AnimationManager.Play();
                 }
 
-                AnimationManager.Stop();
-            }
+                if (!IsOnGround)
+                {
+                    AnimationManager.SetCurrent("player_walk_right");
 
-            velocity.X += Speed;
-            previousFacing = PreviousFacing.Right;
+                    if (AnimationManager.CurrentAnimation is not null)
+                    {
+                        AnimationManager.CurrentAnimation.FrameIndex = AnimationManager.CurrentAnimation.TotalFrames - 1;
+                    }
 
-            if (walkTimer.Paused)
-            {
-                walkTimer.Start();
+                    AnimationManager.Stop();
+                }
+
+                velocity.X += Speed;
+                previousFacing = PreviousFacing.Right;
+
+                if (walkTimer.Paused)
+                {
+                    walkTimer.Start();
+                }
             }
-        }
-        else if (Input.Keyboard.Down(Keys.A))
-        {
-            if (MayJump > 0)
+            else if (Input.Keyboard.Down(Keys.A))
             {
-                AnimationManager.SetCurrent("player_walk_left");
+                if (MayJump > 0)
+                {
+                    AnimationManager.SetCurrent("player_walk_left");
+                    AnimationManager.Play();
+                }
+
+                if (!IsOnGround)
+                {
+                    AnimationManager.SetCurrent("player_walk_left");
+
+                    if (AnimationManager.CurrentAnimation is not null)
+                    {
+                        AnimationManager.CurrentAnimation.FrameIndex = AnimationManager.CurrentAnimation.TotalFrames - 1;
+                    }
+
+                    AnimationManager.Stop();
+                }
+
+                velocity.X += -Speed;
+                previousFacing = PreviousFacing.Left;
+
+                if (walkTimer.Paused)
+                {
+                    walkTimer.Start();
+                }
+            }
+            else
+            {
+                switch (previousFacing)
+                {
+                    case PreviousFacing.Left:
+                        AnimationManager.SetCurrent("player_idle_left");
+                        break;
+                    case PreviousFacing.Right:
+                        AnimationManager.SetCurrent("player_idle_right");
+                        break;
+                }
+
                 AnimationManager.Play();
+
+                walkTimer.Stop();
             }
 
-            if (!IsOnGround)
+            if (Input.Keyboard.Pressed(Keys.Space) && MayJump > 0)
             {
-                AnimationManager.SetCurrent("player_walk_left");
-
-                if (AnimationManager.CurrentAnimation is not null)
-                {
-                    AnimationManager.CurrentAnimation.FrameIndex = AnimationManager.CurrentAnimation.TotalFrames - 1;
-                }
-
-                AnimationManager.Stop();
+                Game.SoundEffectPlayer.SetSource(playerJump);
+                Game.SoundEffectPlayer.Play();
+                velocity.Y = -jumpHeight;
+                MayJump = 0;
             }
 
-            velocity.X += -Speed;
-            previousFacing = PreviousFacing.Left;
+            velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
 
-            if (walkTimer.Paused)
-            {
-                walkTimer.Start();
-            }
+            base.Update();
+            AnimationManager.Update();
         }
-        else
-        {
-            switch (previousFacing)
-            {
-                case PreviousFacing.Left:
-                    AnimationManager.SetCurrent("player_idle_left");
-                    break;
-                case PreviousFacing.Right:
-                    AnimationManager.SetCurrent("player_idle_right");
-                    break;
-            }
-
-            AnimationManager.Play();
-
-            walkTimer.Stop();
-        }
-
-        if (Input.Keyboard.Pressed(Keys.Space) && MayJump > 0)
-        {
-            Game.SoundEffectPlayer.SetSource(playerJump);
-            Game.SoundEffectPlayer.Play();
-            velocity.Y = -jumpHeight;
-            MayJump = 0;
-        }
-
-        velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
-
-        base.Update();
-        AnimationManager.Update();
     } 
 
-    public void Draw(Batcher batcher)
+    public override void Draw(Batcher batcher)
     {
         if (Game.DebugMode)
         {
@@ -221,14 +219,14 @@ public class Player : Entity
 
         if (!Die)
         {
-            batcher.PushMatrix(position, scale, size / 2, rotation);
 
             if (AnimationManager.CurrentAnimation is not null)
             {
+                batcher.PushMatrix(position, scale, size / 2, rotation);
                 batcher.Image(AnimationManager.CurrentAnimation.CurrentFrame, Color.White);
+                batcher.PopMatrix();
             }
 
-            batcher.PopMatrix();
         }
 
         foreach (var playerDieParticle in playerDieParticles)

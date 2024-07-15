@@ -1,5 +1,4 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Core;
 using Frosty.Scripts.DataStructures;
 using System.Numerics;
 
@@ -24,7 +23,7 @@ public static class Helper
 
     public static void DrawTextCentered(string text, Vector2 position, Color color, SpriteFont font, Batcher batcher)
     {
-        batcher.PushMatrix(position, Vector2.One, new Vector2(Game.ArialFont.WidthOf(text) / 2, Game.ArialFont.HeightOf(text) / 2), 0);
+        batcher.PushMatrix(position, Vector2.One, new Vector2(font.WidthOf(text) / 2, font.HeightOf(text) / 2), 0);
         batcher.Text(font, text, Vector2.Zero, color);
         batcher.PopMatrix();
     }
