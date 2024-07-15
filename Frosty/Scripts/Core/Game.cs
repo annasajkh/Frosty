@@ -24,7 +24,7 @@ public sealed class Game : Module
     public static Random Random { get; } = new(Time.Now.Milliseconds);
     public static SceneManager SceneManager { get; private set; } = new(initialSceneName: "MainMenu", initialScene: new MainMenu());
     public static SoundEffectPlayer SoundEffectPlayer { get; private set; } = new SoundEffectPlayer();
-    public static SoundEffect PlayerTalk { get; } = SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "player_talk.ogg"), volume: 50);
+    public static SoundEffect PlayerTalk { get; } = SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "player_talk.ogg"), volume: 10);
 
     Batcher batcher = new();
 

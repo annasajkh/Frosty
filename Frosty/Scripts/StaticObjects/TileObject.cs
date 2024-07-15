@@ -29,7 +29,7 @@ public class TileObject : GameObject
         {
             if (Game.DebugMode)
             {
-                Rect spikeRect = new Rect(Rect.X + 10, Rect.Y + 5, Rect.Width - 20, Rect.Height - 10);
+                Rect spikeRect = new Rect(BoundingBox.X + 10, BoundingBox.Y + 5, BoundingBox.Width - 20, BoundingBox.Height - 10);
 
                 batcher.RectLine(spikeRect, 1, Color.Green);
                 return;

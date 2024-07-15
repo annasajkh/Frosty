@@ -2,6 +2,9 @@
 
 namespace Frosty.Scripts.Components;
 
+/// <summary>
+/// Sprite animation
+/// </summary>
 public sealed class Animation
 {
     public Aseprite Aseprite { get; }

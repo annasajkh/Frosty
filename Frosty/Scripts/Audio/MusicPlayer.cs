@@ -2,7 +2,9 @@
 
 namespace Frosty.Scripts.Audio;
 
-
+/// <summary>
+/// Something that play music
+/// </summary>
 public class MusicPlayer
 {
     public Music? Music { get; private set; }

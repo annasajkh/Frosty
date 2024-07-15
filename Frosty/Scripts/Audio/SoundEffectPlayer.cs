@@ -2,6 +2,9 @@
 
 namespace Frosty.Scripts.Audio;
 
+/// <summary>
+/// Something that play SoundEffect
+/// </summary>
 public class SoundEffectPlayer
 {
     public SoundEffect? SoundEffect { get; private set; }

@@ -1,5 +1,4 @@
-﻿using Foster.Framework;
-using Frosty.Scripts.Abstracts;
+﻿using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Components;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.DataStructures;
@@ -7,6 +6,7 @@ using Frosty.Scripts.Effects;
 using Frosty.Scripts.Entities;
 using Frosty.Scripts.Utils;
 using System.Numerics;
+using Foster.Framework;
 using Timer = Frosty.Scripts.Components.Timer;
 
 namespace Frosty.Scripts.Levels;
@@ -29,12 +29,12 @@ public class Level : Scene
 
     public override void Startup()
     {
-        dialogBox = new DialogBox(new Vector2(App.Width / 2, App.Height - 70), 10, 1f);
+        dialogBox = new DialogBox(new Vector2(App.Width / 2, App.Height - 65), 10, 1f);
         transitionOpacity = 1;
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
-        levelEditor = new LevelEditor(true, new Tilemap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12));
-        snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
 
+        levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12), new TileCollection(["Assets", "Backgrounds", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]));
+        snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
         player = new Player(new Vector2(100, 100));
 
         if (File.Exists(filePath))
@@ -111,7 +111,7 @@ public class Level : Scene
 
             foreach (var tileObject in levelEditor.Tiles.Values)
             {
-                if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+                if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.BoundingBox))
                 {
                     if (!player.playSoundWalkOnce)
                     {
@@ -129,7 +129,7 @@ public class Level : Scene
                 switch (tileObject.tileType)
                 {
                     case TileType.Solid:
-                        if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+                        if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.BoundingBox))
                         {
                             player.friction = Game.entityFriction;
                         }
@@ -138,16 +138,16 @@ public class Level : Scene
                         break;
 
                     case TileType.Spike:
-                        Rect spikeRect = new Rect(tileObject.Rect.X + 10, tileObject.Rect.Y + 5, tileObject.Rect.Width - 20, tileObject.Rect.Height - 10);
+                        Rect spikeRect = new Rect(tileObject.BoundingBox.X + 10, tileObject.BoundingBox.Y + 5, tileObject.BoundingBox.Width - 20, tileObject.BoundingBox.Height - 10);
 
-                        if (player.Rect.Overlaps(spikeRect))
+                        if (player.BoundingBox.Overlaps(spikeRect))
                         {
                             player.Die = true;
                         }
                         break;
 
                     case TileType.Ice:
-                        if (Helper.IsOverlapOnGround(player.Rect, tileObject.Rect))
+                        if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.BoundingBox))
                         {
                             player.friction = Game.entityOnIceFriction;
                         }
@@ -193,7 +193,18 @@ public class Level : Scene
 
         foreach (var tileObject in levelEditor.Tiles.Values)
         {
-            tileObject.Draw(batcher);
+            if (tileObject.tileType == TileType.Decoration)
+            {
+                tileObject.Draw(batcher);
+            }
+        }
+
+        foreach (var tileObject in levelEditor.Tiles.Values)
+        {
+            if (tileObject.tileType != TileType.Decoration)
+            {
+                tileObject.Draw(batcher);
+            }
         }
 
         player.Draw(batcher);

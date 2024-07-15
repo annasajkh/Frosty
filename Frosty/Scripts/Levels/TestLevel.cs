@@ -21,6 +21,6 @@ public class TestLevel : Level
 
     public override void Shutdown()
     {
-        base.Update();
+        base.Shutdown();
     }
 }

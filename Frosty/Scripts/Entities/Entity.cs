@@ -38,21 +38,21 @@ public class Entity : GameObject
     {
         collidingGameObject = other;
 
-        if (Helper.IsOverlapOnGround(CoyoteRect, other.Rect))
+        if (Helper.IsOverlapOnGround(CoyoteRect, other.BoundingBox))
         {
             isOnGroundSet.Add(true);
         }
 
-        if (!Rect.Overlaps(other.Rect))
+        if (!BoundingBox.Overlaps(other.BoundingBox))
         {
             return;
         }
 
-        Rect collisionResult = Rect.OverlapRect(other.Rect);
+        Rect collisionResult = BoundingBox.OverlapRect(other.BoundingBox);
 
         if (collisionResult.Width < collisionResult.Height)
         {
-            if (Rect.X > other.Rect.X)
+            if (BoundingBox.X > other.BoundingBox.X)
             {
                 position.X += collisionResult.Width;
 
@@ -69,7 +69,7 @@ public class Entity : GameObject
         }
         else
         {
-            if (Rect.Y > other.Rect.Y)
+            if (BoundingBox.Y > other.BoundingBox.Y)
             {
                 position.Y += collisionResult.Height;
 
@@ -113,7 +113,7 @@ public class Entity : GameObject
 
         if (collidingGameObject is Entity entity)
         {            
-            if (!Rect.Overlaps(entity.Rect))
+            if (!BoundingBox.Overlaps(entity.BoundingBox))
             {
                 isOnGroundSet.Add(false);
             }

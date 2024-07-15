@@ -2,7 +2,7 @@
 
 namespace Frosty.Scripts.Components;
 
-public class Tilemap
+public class TileMap
 {
     public Texture Texture { get; }
     public string[] AsepritePath { get; }
@@ -13,7 +13,7 @@ public class Tilemap
     public int ColumnTotal { get; }
     public int TotalTiles { get; }
 
-    public Tilemap(string[] asepritePath, int tileWidth, int tileHeight, int rowTotal, int columnTotal, int totalTiles)
+    public TileMap(string[] asepritePath, int tileWidth, int tileHeight, int rowTotal, int columnTotal, int totalTiles)
     {
         Texture = new Texture(new Aseprite(Path.Combine(asepritePath)).Frames[0].Cels[0].Image);
         AsepritePath = asepritePath;

@@ -4,6 +4,9 @@ using System.Numerics;
 
 namespace Frosty.Scripts.Abstracts;
 
+/// <summary>
+/// Anything that can exist in the world is a GameObject
+/// </summary>
 public class GameObject
 {
     public Vector2 position;
@@ -11,7 +14,10 @@ public class GameObject
     public Vector2 scale;
     public Vector2 size;
 
-    public Rect Rect
+    /// <summary>
+    /// The rectangle that cover the entire object
+    /// </summary>
+    public Rect BoundingBox
     {
         get
         {
@@ -31,7 +37,7 @@ public class GameObject
     {
         if (Game.DebugMode)
         { 
-            batcher.RectLine(Rect, 1, Color.Green);
+            batcher.RectLine(BoundingBox, 1, Color.Green);
         }
     }
 }

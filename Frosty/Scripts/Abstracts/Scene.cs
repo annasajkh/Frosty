@@ -2,6 +2,9 @@
 
 namespace Frosty.Scripts.Abstracts;
 
+/// <summary>
+/// Scene is a place where things happened like main menu or the game world
+/// </summary>
 public abstract class Scene
 {
     public abstract void Startup();
