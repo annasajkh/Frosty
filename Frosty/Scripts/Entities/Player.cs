@@ -219,14 +219,12 @@ public class Player : Entity
 
         if (!Die)
         {
-
             if (AnimationManager.CurrentAnimation is not null)
             {
                 batcher.PushMatrix(position, scale, size / 2, rotation);
                 batcher.Image(AnimationManager.CurrentAnimation.CurrentFrame, Color.White);
                 batcher.PopMatrix();
             }
-
         }
 
         foreach (var playerDieParticle in playerDieParticles)

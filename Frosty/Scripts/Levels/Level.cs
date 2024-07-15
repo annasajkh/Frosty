@@ -32,7 +32,7 @@ public class Level : Scene
         dialogBox = new DialogBox(new Vector2(App.Width / 2, App.Height - 70), 10, 1f);
         transitionOpacity = 1;
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
-        levelEditor = new LevelEditor(true, new Tileset(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12));
+        levelEditor = new LevelEditor(true, new Tilemap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12));
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
 
         player = new Player(new Vector2(100, 100));

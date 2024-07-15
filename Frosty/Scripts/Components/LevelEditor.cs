@@ -14,14 +14,14 @@ public class LevelEditor
 
     public bool Editing { get; set; }
 
-    public Tileset? Tileset { get; private set; }
+    public Tilemap? Tilemap { get; private set; }
     public Dictionary<int, TileObject> Tiles { get; } = new();
 
     bool isDeleting;
 
-    public LevelEditor(bool editing, Tileset? tileset = null)
+    public LevelEditor(bool editing, Tilemap? tilemap = null)
     {
-        Tileset = tileset;
+        Tilemap = tilemap;
         Editing = editing;
     }
 
@@ -34,7 +34,7 @@ public class LevelEditor
             tilesToSave.Add(new Tile(tile.Value.position, tile.Value.TextureRect, tile.Value.tileType));
         }
 
-        LevelEditorSaveData levelEditorSaveData = new(Tileset.AsepritePath, Tileset.TileWidth, Tileset.TileHeight, Tileset.RowTotal, Tileset.ColumnTotal, Tileset.TotalTiles, tilesToSave);
+        LevelEditorSaveData levelEditorSaveData = new(Tilemap.AsepritePath, Tilemap.TileWidth, Tilemap.TileHeight, Tilemap.RowTotal, Tilemap.ColumnTotal, Tilemap.TotalTiles, tilesToSave);
 
         string levelJson = JsonConvert.SerializeObject(levelEditorSaveData);
 
@@ -45,7 +45,7 @@ public class LevelEditor
     {
         var levelData = JsonConvert.DeserializeObject<LevelEditorSaveData>(File.ReadAllText(path));
 
-        Tileset = new Tileset(levelData.asepritePath, levelData.tileWidth, levelData.tileHeight, levelData.totalRow, levelData.totalColumn, levelData.totalTiles);
+        Tilemap = new Tilemap(levelData.asepritePath, levelData.tileWidth, levelData.tileHeight, levelData.totalRow, levelData.totalColumn, levelData.totalTiles);
 
         foreach (var tileData in levelData.tiles)
         {
@@ -75,7 +75,7 @@ public class LevelEditor
                 tileType = TileType.Ice;
             }
 
-            tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tileset.GetRect(CurrentTileIndex), tileType));
+            tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Tilemap.GetRect(CurrentTileIndex), tileType));
 
             if (!Tiles.ContainsKey(tileObject.GetHashCode()))
             {
@@ -110,19 +110,19 @@ public class LevelEditor
             CurrentTileIndex -= 1;
         }
 
-        if (CurrentTileIndex > Tileset.TotalTiles - 1)
+        if (CurrentTileIndex > Tilemap.TotalTiles - 1)
         {
             CurrentTileIndex = 0;
         }
         else if (CurrentTileIndex < 0)
         {
-            CurrentTileIndex = Tileset.TotalTiles - 1;
+            CurrentTileIndex = Tilemap.TotalTiles - 1;
         }
     }
 
     public TileObject ToTileObject(Tile tile)
     {
-        return new TileObject(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, Tileset.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight), tile.tileType);
+        return new TileObject(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, Tilemap.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight), tile.tileType);
     }
 
     public Tile ToTile(TileObject tileObject)
@@ -134,8 +134,8 @@ public class LevelEditor
     {
         batcher.PushMatrix(Vector2.Zero, Vector2.One * Game.Scale, Vector2.Zero, 0);
 
-        batcher.Image(Tileset.Texture, Vector2.Zero, Color.White);
-        batcher.RectLine(Tileset.GetRect(CurrentTileIndex), 1, Color.Red);
+        batcher.Image(Tilemap.Texture, Vector2.Zero, Color.White);
+        batcher.RectLine(Tilemap.GetRect(CurrentTileIndex), 1, Color.Red);
 
         batcher.PopMatrix();
     }
@@ -155,7 +155,7 @@ public class LevelEditor
         }
         else
         {
-            batcher.Image(Tileset.Texture, Tileset.GetRect(CurrentTileIndex), Vector2.Zero, new Color(100, 100, 100, 100));
+            batcher.Image(Tilemap.Texture, Tilemap.GetRect(CurrentTileIndex), Vector2.Zero, new Color(100, 100, 100, 100));
         }
 
         batcher.PopMatrix();

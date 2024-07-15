@@ -30,7 +30,7 @@ public class GameObject
     public virtual void Draw(Batcher batcher)
     {
         if (Game.DebugMode)
-        {
+        { 
             batcher.RectLine(Rect, 1, Color.Green);
         }
     }
