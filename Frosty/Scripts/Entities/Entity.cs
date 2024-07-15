@@ -1,7 +1,6 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
-using Frosty.Scripts.Utils;
 using System.Numerics;
 
 namespace Frosty.Scripts.Entities;
@@ -21,14 +20,6 @@ public class Entity : GameObject
 
     GameObject collidingGameObject;
 
-    public Rect CoyoteRect
-    {
-        get
-        {
-            return new Rect(position - (scale * size / 2 + new Vector2(10, 10)), position + (scale * size / 2 + new Vector2(10, 10)));
-        }
-    }
-
     public Entity(Vector2 position, float rotation, Vector2 scale, Vector2 size) : base(position, rotation, scale, size)
     {
 
@@ -38,17 +29,14 @@ public class Entity : GameObject
     {
         collidingGameObject = other;
 
-        if (Helper.IsOverlapOnGround(CoyoteRect, other.BoundingBox))
-        {
-            isOnGroundSet.Add(true);
-        }
-
         if (!BoundingBox.Overlaps(other.BoundingBox))
         {
             return;
         }
 
         Rect collisionResult = BoundingBox.OverlapRect(other.BoundingBox);
+        const float pushAwayForce = 1f;
+        const float overlapThreshold = 1f;
 
         if (collisionResult.Width < collisionResult.Height)
         {
@@ -56,38 +44,64 @@ public class Entity : GameObject
             {
                 position.X += collisionResult.Width;
 
-                velocity.X = 0;
-                isOnGroundSet.Add(false);
+                if (collisionResult.Width > overlapThreshold)
+                {
+                    position.X += pushAwayForce;
+                }
+                if (velocity.X < 0)
+                {
+                    velocity.X = 0;
+                }
             }
             else
             {
                 position.X -= collisionResult.Width;
 
-                velocity.X = 0;
-                isOnGroundSet.Add(false);
+                if (collisionResult.Width > overlapThreshold)
+                {
+                    position.X -= pushAwayForce;
+                }
+                if (velocity.X > 0)
+                {
+                    velocity.X = 0;
+                }
             }
+            isOnGroundSet.Add(false);
         }
         else
         {
             if (BoundingBox.Y > other.BoundingBox.Y)
             {
                 position.Y += collisionResult.Height;
-
-                velocity.Y = 0;
+                if (collisionResult.Height > overlapThreshold)
+                {
+                    position.Y += pushAwayForce;
+                }
+                if (velocity.Y < 0)
+                {
+                    velocity.Y = 0;
+                }
                 isOnGroundSet.Add(false);
             }
             else
             {
                 position.Y -= collisionResult.Height;
-
+                if (collisionResult.Height > overlapThreshold)
+                {
+                    position.Y -= pushAwayForce;
+                }
                 velocity.Y = 0;
                 isOnGroundSet.Add(true);
             }
         }
     }
 
+
+
     public virtual void Update()
     {
+        IsOnGround = false;
+
         if (isOnGroundSet.Contains(true))
         {
             IsOnGround = true;

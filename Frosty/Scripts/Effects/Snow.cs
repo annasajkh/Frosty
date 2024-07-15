@@ -26,7 +26,7 @@ public class Snow : GameObject
 
     public override void Draw(Batcher batcher)
     {
-        batcher.PushMatrix(position, Vector2.One * 3, new Vector2(size.X, size.Y) / 2, rotation);
+        batcher.PushMatrix(position, Vector2.One * Game.Scale, new Vector2(size.X, size.Y) / 2, rotation);
         batcher.Rect(Vector2.Zero, Vector2.One * size, new Color(opacity, opacity, opacity, opacity));
         batcher.PopMatrix();
 

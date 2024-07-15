@@ -1,12 +1,16 @@
 ﻿using Foster.Framework;
+using System.Numerics;
 
 namespace Frosty.Scripts.Levels;
 
-public class TestLevel : Level
+public class Level1 : Level
 {
     public override void Startup()
     {
         base.Startup();
+
+        transitionSpeed = 1f;
+        player.position = new Vector2(30, 335);
     }
 
     public override void Update()

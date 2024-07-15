@@ -17,7 +17,7 @@ public class MainMenu : Scene
     {
         if (Input.Keyboard.Pressed(Keys.Enter))
         {
-            Game.SceneManager.ChangeScene("TestLevel");
+            Game.SceneManager.ChangeScene("IntroLevel");
         }
     }
 

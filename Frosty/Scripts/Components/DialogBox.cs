@@ -1,17 +1,16 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
-using Frosty.Scripts.Utils;
 using System.Numerics;
 
 namespace Frosty.Scripts.Components;
 
 public class DialogBox : GameObject
 {
+    public bool Finished { get; private set; }
     public string CurrentSentence { get; private set; }
     
     float CharPerSeconds { get; set; }
-    float BetweenSentenceDelay { get; set; }
 
     static Texture dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
     
@@ -28,10 +27,9 @@ public class DialogBox : GameObject
 
     public event Action? DialogFinished;
 
-    public DialogBox(Vector2 position, float charPerSeconds, float betweenSentenceDelay) : base(position, 0, Vector2.One * 3, new Vector2(dialogBoxTexture.Width, dialogBoxTexture.Height))
+    public DialogBox(Vector2 position, float charPerSeconds) : base(position, 0, Vector2.One * Game.Scale, new Vector2(dialogBoxTexture.Width, dialogBoxTexture.Height))
     {
         CharPerSeconds = charPerSeconds;
-        BetweenSentenceDelay = betweenSentenceDelay;
 
         speakDelayTimer = new Timer(0, false);
         speakDelayTimer.OnTimeout += () =>
@@ -49,6 +47,7 @@ public class DialogBox : GameObject
 
     public void Play(string[] dialog)
     {
+        Finished = false;
         this.dialog = dialog;
 
         dialogIndex = 0;
@@ -76,6 +75,7 @@ public class DialogBox : GameObject
                 speakDelayTimer.Stop();
                 DialogFinished?.Invoke();
                 hide = true;
+                Finished = true;
                 return;
             }
 
@@ -105,18 +105,18 @@ public class DialogBox : GameObject
             batcher.Image(dialogBoxTexture, Color.White);
             batcher.PopMatrix();
 
-            Helper.DrawTextCentered(sentenceSpeak, position, Color.White, Game.M5x7Dialog, batcher);
+            batcher.Text(Game.M5x7Dialog, sentenceSpeak, position - new Vector2(dialogBoxTexture.Width * Game.Scale / 2 - 25, dialogBoxTexture.Height * Game.Scale / 2 - 15), Color.White);
 
             if (isNextSentence)
             {                
-                batcher.Triangle(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * 3 / 2 - 10 + upAndDownArrow), 
-                                 new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * 3 / 2 - 10 + upAndDownArrow), 
-                                 new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * 3 / 2 - 10 + upAndDownArrow), 
+                batcher.Triangle(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow), 
+                                 new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow), 
+                                 new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow), 
                                  Color.White);
 
-                batcher.TriangleLine(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * 3 / 2 - 10 + upAndDownArrow),
-                                     new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * 3 / 2 - 10 + upAndDownArrow),
-                                     new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * 3 / 2 - 10 + upAndDownArrow),
+                batcher.TriangleLine(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                     new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                     new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
                                      1,
                                      Color.Black);
             }

@@ -13,29 +13,49 @@ namespace Frosty.Scripts.Levels;
 
 public class Level : Scene
 {
-    public bool Paused { get; private set; } = true;
+    public bool Paused { get; private set; } = false;
 
     protected LevelEditor levelEditor;
     protected Player player;
     protected Snowing snowing;
-    public float transitionOpacity;
+    protected float transitionSpeed = 1;
+    protected bool fadeOut = false;
 
+    protected event Action? fadeInTransitionFinished;
+    protected event Action? fadeOutTransitionFinished;
+    protected event Action? playerAtFinishLine;
+
+    bool fadeInTransitionFinishedOnce = false;
+    bool fadeOutTransitionFinishedOnce = false;
+    bool playerAtFinishLineOnce = false;
+
+    public float transitionOpacity;
+    
     Timer playerDyingTimer;
     Timer autoSaveTimer;
+    Timer playerWalkSoundEnableTimer;
 
     string filePath;
 
-    DialogBox dialogBox;
+    protected DialogBox dialogBox;
 
     public override void Startup()
     {
-        dialogBox = new DialogBox(new Vector2(App.Width / 2, App.Height - 65), 10, 1f);
+        dialogBox = new DialogBox(new Vector2(App.Width / 2, 21 * Game.Scale + 5), 10);
         transitionOpacity = 1;
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
 
         levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12), new TileCollection(["Assets", "Backgrounds", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]));
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
         player = new Player(new Vector2(100, 100));
+        player.muteFootStep = true;
+
+        playerWalkSoundEnableTimer = new Timer(0.15f, true);
+        playerWalkSoundEnableTimer.OnTimeout += () =>
+        {
+            player.muteFootStep = false;
+        };
+        playerWalkSoundEnableTimer.Start();
 
         if (File.Exists(filePath))
         {
@@ -57,7 +77,17 @@ public class Level : Scene
         };
 
         autoSaveTimer.Start();
-        dialogBox.Play(["Hello", "My name is Annas"]);
+    }
+
+    public void GoToNextLevel(string name)
+    {
+        fadeOut = true;
+        player.freeze = true;
+
+        fadeOutTransitionFinished += () =>
+        {
+            Game.SceneManager.ChangeScene(name);
+        };
     }
 
     public void SaveLevel()
@@ -99,6 +129,14 @@ public class Level : Scene
 
         if (!Paused)
         {
+            playerWalkSoundEnableTimer.Update();
+
+            if (player.position.X > 1000 && !playerAtFinishLineOnce)
+            {
+                playerAtFinishLine?.Invoke();
+                playerAtFinishLineOnce = true;
+            }
+
             dialogBox.Update();
             playerDyingTimer.Update();
 
@@ -115,13 +153,20 @@ public class Level : Scene
                 {
                     if (!player.playSoundWalkOnce)
                     {
-                        player.PlayWalkSound(tileObject.tileType);
+                        if (!player.muteFootStep)
+                        {
+                            player.PlayWalkSound(tileObject.tileType);
+                        }
                         player.playSoundWalkOnce = true;
                     }
 
                     if (player.shouldPlayWalkSound && !player.Die)
                     {
-                        player.PlayWalkSound(tileObject.tileType);
+                        if (!player.muteFootStep)
+                        {
+                            player.PlayWalkSound(tileObject.tileType);
+                        }
+
                         player.shouldPlayWalkSound = false;
                     }
                 }
@@ -160,19 +205,48 @@ public class Level : Scene
                 }
             }
 
+            if (player.position.X < player.size.X * Game.Scale / 2)
+            {
+                player.position.X = player.size.X * Game.Scale / 2;
+            }
+
             if (player.position.Y > App.Height)
             {
                 player.Die = true;
+            }
+
+            if (fadeOut)
+            {
+                if (transitionOpacity < 0.9)
+                {
+                    fadeOutTransitionFinishedOnce = false;
+                    transitionOpacity += Time.Delta * transitionSpeed;
+                }
+                else
+                {
+                    if (!fadeOutTransitionFinishedOnce)
+                    {
+                        fadeOutTransitionFinished?.Invoke();
+                        fadeOutTransitionFinishedOnce = true;
+                    }
+                    transitionOpacity = 1;
+                }
             }
 
             if (player.Die)
             {
                 if (transitionOpacity < 0.9)
                 {
-                    transitionOpacity += Time.Delta;
+                    fadeOutTransitionFinishedOnce = false;
+                    transitionOpacity += Time.Delta * transitionSpeed;
                 }
                 else
                 {
+                    if (!fadeOutTransitionFinishedOnce)
+                    {
+                        fadeOutTransitionFinished?.Invoke();
+                        fadeOutTransitionFinishedOnce = true;
+                    }
                     transitionOpacity = 1;
                 }
 
@@ -216,14 +290,20 @@ public class Level : Scene
             transitionOpacity = 0.75f;
         }
 
-        if (!player.Die)
+        if (!player.Die && !fadeOut)
         {
             if (transitionOpacity > 0.1)
             {
-                transitionOpacity -= Time.Delta;
+                fadeInTransitionFinishedOnce = false;
+                transitionOpacity -= Time.Delta * transitionSpeed;
             }
             else
             {
+                if (!fadeInTransitionFinishedOnce)
+                {
+                    fadeInTransitionFinished?.Invoke();
+                    fadeInTransitionFinishedOnce = true;
+                }
                 transitionOpacity = 0;
             }
         }

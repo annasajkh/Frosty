@@ -19,6 +19,8 @@ public class Player : Entity
     public AnimationManager AnimationManager { get; } = new();
     public bool shouldPlayWalkSound;
     public bool playSoundWalkOnce;
+    public bool freeze;
+    public bool muteFootStep;
 
     float maxSpeed = 300;
     float jumpHeight = 500;
@@ -115,14 +117,14 @@ public class Player : Entity
 
         if (!Die)
         {
-            if (!IsOnGround)
+            if (velocity.Y < 0)
             {
                 playSoundWalkOnce = false;
             }
 
             walkTimer.Update();
 
-            if (Input.Keyboard.Down(Keys.D))
+            if (Input.Keyboard.Down(Keys.D) && !freeze)
             {
                 if (MayJump > 0)
                 {
@@ -150,7 +152,7 @@ public class Player : Entity
                     walkTimer.Start();
                 }
             }
-            else if (Input.Keyboard.Down(Keys.A))
+            else if (Input.Keyboard.Down(Keys.A) && !freeze)
             {
                 if (MayJump > 0)
                 {
@@ -195,12 +197,13 @@ public class Player : Entity
                 walkTimer.Stop();
             }
 
-            if (Input.Keyboard.Pressed(Keys.Space) && MayJump > 0)
+            if (Input.Keyboard.Pressed(Keys.Space) && (IsOnGround || MayJump > 0) && !freeze)
             {
                 Game.SoundEffectPlayer.SetSource(playerJump);
                 Game.SoundEffectPlayer.Play();
                 velocity.Y = -jumpHeight;
                 MayJump = 0;
+                IsOnGround = false;
             }
 
             velocity.X = Math.Clamp(velocity.X, -maxSpeed, maxSpeed);
@@ -212,11 +215,6 @@ public class Player : Entity
 
     public override void Draw(Batcher batcher)
     {
-        if (Game.DebugMode)
-        {
-            batcher.RectLine(CoyoteRect, 1, Color.Yellow);
-        }
-
         if (!Die)
         {
             if (AnimationManager.CurrentAnimation is not null)
