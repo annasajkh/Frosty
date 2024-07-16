@@ -1,6 +1,6 @@
 ﻿using Frosty.Scripts.Bindings.SDL2;
 
-namespace Frosty.Scripts.Audio;
+namespace Frosty.Scripts.Components.Audio;
 
 /// <summary>
 /// There can be only one music playing at the time, this represent SDL2_Mixer music which there is can only be 1 music playing at the time
@@ -153,7 +153,7 @@ public class Music : Audio, IDisposable
         return SDL_mixer.Mix_GetVolumeMusicStream(Handle);
     }
 
-    public void Hook(SDL_mixer.MixFuncDelegate mix_func, IntPtr arg)
+    public void Hook(SDL_mixer.MixFuncDelegate mix_func, nint arg)
     {
         SDL_mixer.Mix_HookMusic(mix_func, arg);
     }

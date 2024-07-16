@@ -1,5 +1,4 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.DataStructures;
 
 namespace Frosty.Scripts.Components;
 

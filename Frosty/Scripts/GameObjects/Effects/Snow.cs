@@ -1,9 +1,8 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
 using System.Numerics;
 
-namespace Frosty.Scripts.Effects;
+namespace Frosty.Scripts.GameObjects.Effects;
 
 public class Snow : GameObject
 {

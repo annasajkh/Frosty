@@ -1,12 +1,11 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Audio;
 using Frosty.Scripts.Components;
+using Frosty.Scripts.Components.Audio;
 using Frosty.Scripts.Core;
-using Frosty.Scripts.DataStructures;
-using Frosty.Scripts.Effects;
+using Frosty.Scripts.GameObjects.Effects;
 using System.Numerics;
 using Timer = Frosty.Scripts.Components.Timer;
-namespace Frosty.Scripts.Entities;
+namespace Frosty.Scripts.GameObjects.Entities;
 
 enum PreviousFacing
 {
@@ -25,6 +24,7 @@ public class Player : Entity
     float maxSpeed = 300;
     float jumpHeight = 500;
     bool spawnDieParticle;
+
     List<PlayerDieParticle> playerDieParticles = new();
     PreviousFacing previousFacing;
 
@@ -40,7 +40,15 @@ public class Player : Entity
     private static Aseprite playerWalkLeft = playerWalkLeft = new Aseprite(Path.Combine("Assets", "Player", "Graphics", "player_walk_left.ase"));
 
     Timer walkTimer;
-    
+
+    public override Rect BoundingBox
+    {
+        get
+        {
+            return new Rect(position - scale * size / 2 + new Vector2(10f, 0), position + scale * size / 2 - new Vector2(10f, 0));
+        }
+    }
+
     public Player(Vector2 position) : base(position, 0, Vector2.One * Game.Scale, new Vector2(playerIdleLeft.Width, playerIdleLeft.Height))
     {
         walkTimer = new Timer(0.25f, true);
@@ -211,7 +219,7 @@ public class Player : Entity
             base.Update();
             AnimationManager.Update();
         }
-    } 
+    }
 
     public override void Draw(Batcher batcher)
     {

@@ -1,6 +1,6 @@
 ﻿using Frosty.Scripts.Bindings.SDL2;
 
-namespace Frosty.Scripts.Audio;
+namespace Frosty.Scripts.Components.Audio;
 
 /// <summary>
 /// Something that play music
@@ -95,7 +95,7 @@ public class MusicPlayer
     public void Play()
     {
         if (Music is Music music)
-        {            
+        {
             int volumeError = SDL_mixer.Mix_VolumeMusic(music.Volume);
             if (volumeError == 0)
             {

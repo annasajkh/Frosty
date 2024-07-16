@@ -1,6 +1,6 @@
 ﻿using Frosty.Scripts.Bindings.SDL2;
 
-namespace Frosty.Scripts.Audio;
+namespace Frosty.Scripts.Components.Audio;
 
 
 /// <summary>

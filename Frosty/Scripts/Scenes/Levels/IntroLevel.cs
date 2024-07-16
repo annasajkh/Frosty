@@ -1,7 +1,6 @@
-﻿using Foster.Framework;
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace Frosty.Scripts.Levels;
+namespace Frosty.Scripts.Scenes.Levels;
 
 public class IntroLevel : Level
 {
@@ -16,8 +15,7 @@ public class IntroLevel : Level
         fadeInTransitionFinished += () =>
         {
             transitionSpeed = 1f;
-            dialogBox.Play(["a"]);
-            //dialogBox.Play(["This day has been rough...", "I need to get back home before the snow \nstorm"]);
+            dialogBox.Play(["This day has been rough...", "I need to get back home before the snow \nstorm"]);
         };
 
         playerAtFinishLine += () =>
@@ -29,20 +27,5 @@ public class IntroLevel : Level
         {
             player.freeze = false;
         };
-    }
-
-    public override void Update()
-    {
-        base.Update();
-    }
-
-    public override void Render(Batcher batcher)
-    {
-        base.Render(batcher);
-    }
-
-    public override void Shutdown()
-    {
-        base.Shutdown();
     }
 }

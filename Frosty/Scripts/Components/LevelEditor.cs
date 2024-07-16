@@ -1,10 +1,10 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Core;
-using Frosty.Scripts.DataStructures;
-using Frosty.Scripts.StaticObjects;
 using Frosty.Scripts.Utils;
 using System.Numerics;
 using Newtonsoft.Json;
+using Frosty.Scripts.GameObjects.StaticObjects;
+using Frosty.Scripts.Core;
+using Frosty.Scripts.Scenes.Levels;
 
 namespace Frosty.Scripts.Components;
 
@@ -16,8 +16,8 @@ public enum EditingMode
 
 public class LevelEditor
 {
+    public Level Level { get; }
     public int CurrentTileIndex { get; private set; } = 0;
-
     public bool Editing { get; set; }
 
     public TileMap? TileMap { get; private set; }
@@ -29,8 +29,9 @@ public class LevelEditor
 
     public EditingMode EditingMode { get; private set; }
 
-    public LevelEditor(bool editing, EditingMode editingMode, TileMap tileMap, TileCollection tileCollection)
+    public LevelEditor(bool editing, EditingMode editingMode, TileMap tileMap, TileCollection tileCollection, Level level)
     {
+        Level = level;
         TileMap = tileMap;
         TileCollection = tileCollection;
         Editing = editing;
@@ -54,9 +55,9 @@ public class LevelEditor
             }
         }
 
-        LevelEditorSaveData levelEditorSaveData = new(TileMap.AsepritePath, TileCollection.AsepritePath, TileMap.TileWidth, TileMap.TileHeight, TileMap.RowTotal, TileMap.ColumnTotal, TileMap.TotalTiles, tilesToSave, tileCollectionToSave);
+        LevelEditorSaveData levelEditorSaveData = new(TileMap.AsepritePath, TileCollection.AsepritePath, TileMap.TileWidth, TileMap.TileHeight, TileMap.RowTotal, TileMap.ColumnTotal, tilesToSave, tileCollectionToSave);
 
-        string levelJson = JsonConvert.SerializeObject(levelEditorSaveData);
+        string levelJson = JsonConvert.SerializeObject(levelEditorSaveData, Formatting.Indented);
 
         string[] pathSplitted = path.Split(Path.DirectorySeparatorChar);
         string dirPath = Path.Join(pathSplitted.Take(pathSplitted.Length - 1).ToArray());
@@ -66,14 +67,21 @@ public class LevelEditor
             Directory.CreateDirectory(dirPath);
         }
 
-        File.WriteAllText(path, levelJson);
+        try
+        {
+            File.WriteAllText(path, levelJson);
+        }
+        catch(Exception exception)
+        {
+            Log.Warning($"Cannot auto save the level {exception}");
+        }
     }
 
     public void Load(string path)
     {
         var levelData = JsonConvert.DeserializeObject<LevelEditorSaveData>(File.ReadAllText(path));
 
-        TileMap = new TileMap(levelData.asepritePath, levelData.tileWidth, levelData.tileHeight, levelData.totalRow, levelData.totalColumn, levelData.totalTiles);
+        TileMap = new TileMap(levelData.asepritePath, levelData.tileWidth, levelData.tileHeight, levelData.totalRow, levelData.totalColumn);
         TileCollection = new TileCollection(levelData.collectionAsepritePath, TileCollection.Tiles);
 
         foreach (var tileData in levelData.tiles)
@@ -109,13 +117,14 @@ public class LevelEditor
         switch (EditingMode)
         {
             case EditingMode.TileSet:
-                if (Input.Mouse.Down(MouseButtons.Left))
+                if (Input.Mouse.Down(MouseButtons.Left) && !Level.Paused)
                 {
                     TileObject tileObject;
 
                     TileType tileType = TileType.Solid;
 
-                    if (CurrentTileIndex == 9 || CurrentTileIndex == 10)
+                    // If CurrentTileIndex is a spesific index change it to a spike
+                    if (CurrentTileIndex == 9 || CurrentTileIndex == 10 || CurrentTileIndex == 12 || CurrentTileIndex == 13)
                     {
                         tileType = TileType.Spike;
                     }
@@ -130,9 +139,14 @@ public class LevelEditor
                     {
                         Tiles.Add(tileObject.GetHashCode(), tileObject);
                     }
+                    else
+                    {
+                        Tiles.Remove(tileObject.GetHashCode());
+                        Tiles.Add(tileObject.GetHashCode(), tileObject);
+                    }
                 }
 
-                if (Input.Mouse.Down(MouseButtons.Right))
+                if (Input.Mouse.Down(MouseButtons.Right) && !Level.Paused)
                 {
                     isDeleting = true;
 
@@ -184,41 +198,29 @@ public class LevelEditor
                 break;
         }
 
-        int mouseScroll = (int)Input.Mouse.Wheel.Y;
+        if (EditingMode == EditingMode.TileSet)
+        {
+            for (int i = 0; i < TileMap.RowTotal * TileMap.ColumnTotal; i++)
+            {
+                Rect tileMapRect = TileMap.GetRect(i) * 3;
 
-        if (mouseScroll > 0)
-        {
-            CurrentTileIndex += 1;
+                if (tileMapRect.Contains(Input.Mouse.Position) && Input.Mouse.Pressed(MouseButtons.Left) && Level.Paused)
+                {
+                    CurrentTileIndex = i;
+                }
+            }
         }
-        else if (mouseScroll < 0)
+        else if (EditingMode == EditingMode.TileCollection)
         {
-            CurrentTileIndex -= 1;
-        }
+            for (int i = 0; i < TileCollection.Tiles.Count; i++)
+            {
+                Rect tileCollectionRect = new Rect(TileCollection.Tiles[i].rectX, TileCollection.Tiles[i].rectY, TileCollection.Tiles[i].rectWidth, TileCollection.Tiles[i].rectHeight);
 
-        switch (EditingMode)
-        {
-            case EditingMode.TileSet:
-                if (CurrentTileIndex > TileMap.TotalTiles - 1)
+                if (tileCollectionRect.Contains(Input.Mouse.Position) && Input.Mouse.Pressed(MouseButtons.Left) && Level.Paused)
                 {
-                    CurrentTileIndex = 0;
+                    CurrentTileIndex = i;
                 }
-                else if (CurrentTileIndex < 0)
-                {
-                    CurrentTileIndex = TileMap.TotalTiles - 1;
-                }
-                break;
-            case EditingMode.TileCollection:
-                if (CurrentTileIndex > TileCollection.Tiles.Count - 1)
-                {
-                    CurrentTileIndex = 0;
-                }
-                else if (CurrentTileIndex < 0)
-                {
-                    CurrentTileIndex = TileCollection.Tiles.Count - 1;
-                }
-                break;
-            default:
-                break;
+            }
         }
     }
 
@@ -242,24 +244,52 @@ public class LevelEditor
     public void DrawWhenPaused(Batcher batcher)
     {
         batcher.PushMatrix(Vector2.Zero, Vector2.One * Game.Scale, Vector2.Zero, 0);
-
         switch (EditingMode)
         {
             case EditingMode.TileSet:
                 batcher.Image(TileMap.Texture, Vector2.Zero, Color.White);
-                batcher.RectLine(TileMap.GetRect(CurrentTileIndex), 1, Color.Red);
                 break;
             case EditingMode.TileCollection:
                 batcher.Image(TileCollection.Texture, Vector2.Zero, Color.White);
-
-                Rect tileRect = new Rect(TileCollection.Tiles[CurrentTileIndex].x, TileCollection.Tiles[CurrentTileIndex].y, TileCollection.Tiles[CurrentTileIndex].rectWidth, TileCollection.Tiles[CurrentTileIndex].rectHeight);
-
-                batcher.RectLine(tileRect, 1, Color.Red);
                 break;
             default:
                 break;
         }
+        batcher.PopMatrix();
 
+        batcher.PushMatrix(Vector2.Zero, Vector2.One, Vector2.Zero, 0);
+        if (EditingMode == EditingMode.TileSet)
+        {
+            for (int i = 0; i < TileMap.RowTotal * TileMap.ColumnTotal; i++)
+            {
+                Rect tileMapRect = TileMap.GetRect(i) * 3;
+                batcher.RectLine(tileMapRect, 1, Color.Red);
+            }
+        }
+        else if (EditingMode == EditingMode.TileCollection)
+        {
+            for (int i = 0; i < TileCollection.Tiles.Count; i++)
+            {
+                Rect tileCollectionRect = new Rect(TileCollection.Tiles[i].rectX, TileCollection.Tiles[i].rectY, TileCollection.Tiles[i].rectWidth, TileCollection.Tiles[i].rectHeight);
+                batcher.RectLine(tileCollectionRect, 1, Color.Red);
+            }
+        }
+        batcher.PopMatrix();
+
+        batcher.PushMatrix(Vector2.Zero, Vector2.One * Game.Scale, Vector2.Zero, 0);
+        switch (EditingMode)
+        {
+            case EditingMode.TileSet:
+                batcher.RectLine(TileMap.GetRect(CurrentTileIndex), 1, Color.Green);
+                break;
+            case EditingMode.TileCollection:
+                Rect tileRect = new Rect(TileCollection.Tiles[CurrentTileIndex].x, TileCollection.Tiles[CurrentTileIndex].y, TileCollection.Tiles[CurrentTileIndex].rectWidth, TileCollection.Tiles[CurrentTileIndex].rectHeight);
+
+                batcher.RectLine(tileRect, 1, Color.Green);
+                break;
+            default:
+                break;
+        }
         batcher.PopMatrix();
     }
 
@@ -272,32 +302,36 @@ public class LevelEditor
 
         batcher.PushMatrix(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Vector2.One * Game.Scale, Vector2.One * Game.TileSize / 2, 0);
 
-        switch (EditingMode)
-        {
-            case EditingMode.TileSet:
-                if (isDeleting)
-                {
-                    batcher.Image(TileMap.Texture, TileMap.GetRect(CurrentTileIndex), Vector2.Zero, new Color(100, 0, 0, 100));
-                }
-                else
-                {
-                    batcher.Image(TileMap.Texture, TileMap.GetRect(CurrentTileIndex), Vector2.Zero, new Color(100, 100, 100, 100));
-                }
-                break;
-            case EditingMode.TileCollection:
-                Rect tileRect = new Rect(TileCollection.Tiles[CurrentTileIndex].x, TileCollection.Tiles[CurrentTileIndex].y, TileCollection.Tiles[CurrentTileIndex].rectWidth, TileCollection.Tiles[CurrentTileIndex].rectHeight);
 
-                if (isDeleting)
-                {
-                    batcher.Image(TileCollection.Texture, tileRect, Vector2.Zero, new Color(100, 0, 0, 100));
-                }
-                else
-                {
-                    batcher.Image(TileCollection.Texture, tileRect, Vector2.Zero, new Color(100, 100, 100, 100));
-                }
-                break;
-            default:
-                break;
+        if (!Level.Paused)
+        {
+            switch (EditingMode)
+            {
+                case EditingMode.TileSet:
+                    if (isDeleting)
+                    {
+                        batcher.Image(TileMap.Texture, TileMap.GetRect(CurrentTileIndex), Vector2.Zero, new Color(100, 0, 0, 100));
+                    }
+                    else
+                    {
+                        batcher.Image(TileMap.Texture, TileMap.GetRect(CurrentTileIndex), Vector2.Zero, new Color(100, 100, 100, 100));
+                    }
+                    break;
+                case EditingMode.TileCollection:
+                    Rect tileRect = new Rect(TileCollection.Tiles[CurrentTileIndex].x, TileCollection.Tiles[CurrentTileIndex].y, TileCollection.Tiles[CurrentTileIndex].rectWidth, TileCollection.Tiles[CurrentTileIndex].rectHeight);
+
+                    if (isDeleting)
+                    {
+                        batcher.Image(TileCollection.Texture, tileRect, Vector2.Zero, new Color(100, 0, 0, 100));
+                    }
+                    else
+                    {
+                        batcher.Image(TileCollection.Texture, tileRect, Vector2.Zero, new Color(100, 100, 100, 100));
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         batcher.PopMatrix();

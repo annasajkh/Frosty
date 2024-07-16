@@ -1,16 +1,30 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Abstracts;
+using Frosty.Scripts.Components;
 using Frosty.Scripts.Core;
-using Frosty.Scripts.DataStructures;
 using System.Numerics;
 
-namespace Frosty.Scripts.StaticObjects;
+namespace Frosty.Scripts.GameObjects.StaticObjects;
 
 public class TileObject : GameObject
 {
     public Texture Texture { get; }
     public Rect TextureRect { get; }
     public TileType tileType;
+
+    public override Rect BoundingBox
+    {
+        get
+        {
+            if (tileType == TileType.Spike)
+            {
+                return new Rect(base.BoundingBox.X + 10, base.BoundingBox.Y + 5, base.BoundingBox.Width - 20, base.BoundingBox.Height - 10);
+            }
+            else
+            {
+                return base.BoundingBox;
+            }
+        }
+    }
 
     public TileObject(Vector2 position, Vector2 scale, Texture texture, Rect rect, TileType tileType) : base(position, 0, scale, Vector2.One * Game.TileSize)
     {
@@ -24,17 +38,6 @@ public class TileObject : GameObject
         batcher.PushMatrix(position, scale, size / 2, rotation);
         batcher.Image(Texture, TextureRect, Vector2.Zero, Color.White);
         batcher.PopMatrix();
-
-        if (tileType == TileType.Spike)
-        {
-            if (Game.DebugMode)
-            {
-                Rect spikeRect = new Rect(BoundingBox.X + 10, BoundingBox.Y + 5, BoundingBox.Width - 20, BoundingBox.Height - 10);
-
-                batcher.RectLine(spikeRect, 1, Color.Green);
-                return;
-            }
-        }
 
         base.Draw(batcher);
     }

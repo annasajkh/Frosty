@@ -1,9 +1,8 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
 using System.Numerics;
 
-namespace Frosty.Scripts.Entities;
+namespace Frosty.Scripts.GameObjects.Entities;
 
 public class Entity : GameObject
 {
@@ -35,8 +34,9 @@ public class Entity : GameObject
         }
 
         Rect collisionResult = BoundingBox.OverlapRect(other.BoundingBox);
-        const float pushAwayForce = 1f;
-        const float overlapThreshold = 1f;
+
+        float pushAwayForce = 1f;
+        float overlapThreshold = 1f;
 
         if (collisionResult.Width < collisionResult.Height)
         {
@@ -48,9 +48,10 @@ public class Entity : GameObject
                 {
                     position.X += pushAwayForce;
                 }
+
                 if (velocity.X < 0)
                 {
-                    velocity.X = 0;
+                    velocity.X = 1;
                 }
             }
             else
@@ -61,42 +62,49 @@ public class Entity : GameObject
                 {
                     position.X -= pushAwayForce;
                 }
+
                 if (velocity.X > 0)
                 {
-                    velocity.X = 0;
+                    velocity.X = -1;
                 }
             }
-            isOnGroundSet.Add(false);
         }
         else
         {
             if (BoundingBox.Y > other.BoundingBox.Y)
             {
                 position.Y += collisionResult.Height;
+
                 if (collisionResult.Height > overlapThreshold)
                 {
                     position.Y += pushAwayForce;
                 }
+
                 if (velocity.Y < 0)
                 {
                     velocity.Y = 0;
                 }
+
                 isOnGroundSet.Add(false);
             }
             else
             {
                 position.Y -= collisionResult.Height;
+
                 if (collisionResult.Height > overlapThreshold)
                 {
                     position.Y -= pushAwayForce;
                 }
-                velocity.Y = 0;
+
+                if (velocity.Y > 0)
+                {
+                    velocity.Y = 0;
+                }
+
                 isOnGroundSet.Add(true);
             }
         }
     }
-
-
 
     public virtual void Update()
     {
@@ -126,7 +134,7 @@ public class Entity : GameObject
         position += velocity * Time.Delta;
 
         if (collidingGameObject is Entity entity)
-        {            
+        {
             if (!BoundingBox.Overlaps(entity.BoundingBox))
             {
                 isOnGroundSet.Add(false);

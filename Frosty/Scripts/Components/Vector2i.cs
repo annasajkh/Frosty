@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Frosty.Scripts.DataStructures;
+namespace Frosty.Scripts.Components;
 
 public struct Vector2i : IEquatable<Vector2i>, IFormattable
 {

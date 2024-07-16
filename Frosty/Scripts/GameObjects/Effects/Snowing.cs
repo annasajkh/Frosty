@@ -3,7 +3,7 @@ using Frosty.Scripts.Core;
 using System.Numerics;
 using Timer = Frosty.Scripts.Components.Timer;
 
-namespace Frosty.Scripts.Effects;
+namespace Frosty.Scripts.GameObjects.Effects;
 
 public class Snowing
 {

@@ -11,9 +11,8 @@ public class TileMap
     public int TileHeight { get; }
     public int RowTotal { get; }
     public int ColumnTotal { get; }
-    public int TotalTiles { get; }
 
-    public TileMap(string[] asepritePath, int tileWidth, int tileHeight, int rowTotal, int columnTotal, int totalTiles)
+    public TileMap(string[] asepritePath, int tileWidth, int tileHeight, int rowTotal, int columnTotal)
     {
         Texture = new Texture(new Aseprite(Path.Combine(asepritePath)).Frames[0].Cels[0].Image);
         AsepritePath = asepritePath;
@@ -21,11 +20,10 @@ public class TileMap
         TileHeight = tileHeight;
         RowTotal = rowTotal;
         ColumnTotal = columnTotal;
-        TotalTiles = totalTiles;
     }
 
     public Rect GetRect(int index)
-    {
+    { 
         int row = index / RowTotal;
         int column = index % RowTotal;
 

@@ -1,6 +1,6 @@
-﻿using Frosty.Scripts.Abstracts;
+﻿using Frosty.Scripts.Scenes;
 
-namespace Frosty.Scripts.Managers;
+namespace Frosty.Scripts.Components;
 
 public sealed class SceneManager
 {

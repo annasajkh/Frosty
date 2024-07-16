@@ -1,23 +1,23 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
 using System.Numerics;
+using Timer = Frosty.Scripts.Components.Timer;
 
-namespace Frosty.Scripts.Components;
+namespace Frosty.Scripts.GameObjects;
 
 public class DialogBox : GameObject
 {
     public bool Finished { get; private set; }
     public string CurrentSentence { get; private set; }
-    
+
     float CharPerSeconds { get; set; }
 
     static Texture dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
-    
+
     Timer speakDelayTimer;
 
     string[] dialog;
-    
+
     bool hide = true;
     bool isNextSentence;
     string sentenceSpeak = "";
@@ -89,7 +89,7 @@ public class DialogBox : GameObject
         }
 
         if (CurrentSentence is not null)
-        {            
+        {
             if (sentenceIndex > CurrentSentence.Length)
             {
                 isNextSentence = true;
@@ -100,7 +100,7 @@ public class DialogBox : GameObject
     public override void Draw(Batcher batcher)
     {
         if (!hide)
-        {            
+        {
             batcher.PushMatrix(position, scale, size / 2, rotation);
             batcher.Image(dialogBoxTexture, Color.White);
             batcher.PopMatrix();
@@ -108,10 +108,10 @@ public class DialogBox : GameObject
             batcher.Text(Game.M5x7Dialog, sentenceSpeak, position - new Vector2(dialogBoxTexture.Width * Game.Scale / 2 - 25, dialogBoxTexture.Height * Game.Scale / 2 - 15), Color.White);
 
             if (isNextSentence)
-            {                
-                batcher.Triangle(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow), 
-                                 new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow), 
-                                 new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow), 
+            {
+                batcher.Triangle(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                 new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                 new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
                                  Color.White);
 
                 batcher.TriangleLine(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),

@@ -1,5 +1,5 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.DataStructures;
+using Frosty.Scripts.Components;
 using System.Numerics;
 
 namespace Frosty.Scripts.Utils;

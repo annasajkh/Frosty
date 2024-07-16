@@ -1,7 +1,7 @@
 ﻿using Foster.Framework;
 using System.Numerics;
 
-namespace Frosty.Scripts.DataStructures;
+namespace Frosty.Scripts.Components;
 
 public enum TileType
 {
@@ -38,14 +38,14 @@ public struct Tile
 
     public override int GetHashCode()
     {
-        return new Vector2i((int)x, (int)y).GetHashCode();
+        return new Vector2i(x, y).GetHashCode();
     }
 
     public override bool Equals(object? obj)
     {
         if (obj is Tile other)
         {
-            return new Vector2i((int)x, (int)y).Equals(new Vector2i((int)other.x, (int)other.y));
+            return new Vector2i(x, y).Equals(new Vector2i(other.x, other.y));
         }
         return false;
     }

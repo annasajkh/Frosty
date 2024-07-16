@@ -1,4 +1,4 @@
-﻿namespace Frosty.Scripts.Audio;
+﻿namespace Frosty.Scripts.Components.Audio;
 
 public enum AudioType
 {

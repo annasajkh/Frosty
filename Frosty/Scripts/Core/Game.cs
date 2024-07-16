@@ -1,8 +1,8 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Audio;
-using Frosty.Scripts.Levels;
-using Frosty.Scripts.Managers;
+using Frosty.Scripts.Components;
+using Frosty.Scripts.Components.Audio;
 using Frosty.Scripts.Scenes;
+using Frosty.Scripts.Scenes.Levels;
 
 namespace Frosty.Scripts.Core;
 
@@ -32,6 +32,11 @@ public sealed class Game : Module
     {
         SceneManager.AddScene("IntroLevel", new IntroLevel());
         SceneManager.AddScene("Level1", new Level1());
+        SceneManager.AddScene("Level2", new Level2());
+
+#if DEBUG
+        SceneManager.ChangeScene("Level1");
+#endif
     }
 
     public override void Update()

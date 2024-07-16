@@ -1,5 +1,4 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Abstracts;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.Utils;
 using System.Numerics;

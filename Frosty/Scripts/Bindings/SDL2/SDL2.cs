@@ -32,7 +32,6 @@ using System.Diagnostics.CodeAnalysis;
 #endif
 using System.Runtime.InteropServices;
 using System.Text;
-using Frosty.Scripts.Bindings.SDL2;
 #endregion
 
 namespace Frosty.Scripts.Bindings.SDL2;
@@ -473,7 +472,7 @@ public static class SDL
     public const uint SDL_INIT_EVENTS = 0x00004000;
     public const uint SDL_INIT_SENSOR = 0x00008000;
     public const uint SDL_INIT_NOPARACHUTE = 0x00100000;
-    public const uint SDL_INIT_EVERYTHING = 
+    public const uint SDL_INIT_EVERYTHING =
         SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO |
         SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC |
         SDL_INIT_GAMECONTROLLER | SDL_INIT_SENSOR
@@ -3670,7 +3669,7 @@ public static class SDL
         }
         SDL_PixelType pType =
             (SDL_PixelType)SDL_PIXELTYPE(format);
-        return 
+        return
             pType == SDL_PixelType.SDL_PIXELTYPE_INDEX1 ||
             pType == SDL_PixelType.SDL_PIXELTYPE_INDEX4 ||
             pType == SDL_PixelType.SDL_PIXELTYPE_INDEX8
@@ -3685,7 +3684,7 @@ public static class SDL
         }
         SDL_PixelType pType =
             (SDL_PixelType)SDL_PIXELTYPE(format);
-        return 
+        return
             pType == SDL_PixelType.SDL_PIXELTYPE_PACKED8 ||
             pType == SDL_PixelType.SDL_PIXELTYPE_PACKED16 ||
             pType == SDL_PixelType.SDL_PIXELTYPE_PACKED32
@@ -3700,7 +3699,7 @@ public static class SDL
         }
         SDL_PixelType pType =
             (SDL_PixelType)SDL_PIXELTYPE(format);
-        return 
+        return
             pType == SDL_PixelType.SDL_PIXELTYPE_ARRAYU8 ||
             pType == SDL_PixelType.SDL_PIXELTYPE_ARRAYU16 ||
             pType == SDL_PixelType.SDL_PIXELTYPE_ARRAYU32 ||
@@ -3715,7 +3714,7 @@ public static class SDL
         {
             SDL_PackedOrder pOrder =
                 (SDL_PackedOrder)SDL_PIXELORDER(format);
-            return 
+            return
                 pOrder == SDL_PackedOrder.SDL_PACKEDORDER_ARGB ||
                 pOrder == SDL_PackedOrder.SDL_PACKEDORDER_RGBA ||
                 pOrder == SDL_PackedOrder.SDL_PACKEDORDER_ABGR ||
@@ -3726,7 +3725,7 @@ public static class SDL
         {
             SDL_ArrayOrder aOrder =
                 (SDL_ArrayOrder)SDL_PIXELORDER(format);
-            return 
+            return
                 aOrder == SDL_ArrayOrder.SDL_ARRAYORDER_ARGB ||
                 aOrder == SDL_ArrayOrder.SDL_ARRAYORDER_RGBA ||
                 aOrder == SDL_ArrayOrder.SDL_ARRAYORDER_ABGR ||
@@ -7783,7 +7782,7 @@ public static class SDL
         public ushort period;
         public ushort samples;
         public nint data; // Uint16*
-                            // Envelope
+                          // Envelope
         public ushort attack_length;
         public ushort attack_level;
         public ushort fade_length;
@@ -8125,7 +8124,7 @@ public static class SDL
     public const uint SDL_AUDIO_ALLOW_FORMAT_CHANGE = 0x00000002;
     public const uint SDL_AUDIO_ALLOW_CHANNELS_CHANGE = 0x00000004;
     public const uint SDL_AUDIO_ALLOW_SAMPLES_CHANGE = 0x00000008;
-    public const uint SDL_AUDIO_ALLOW_ANY_CHANGE = 
+    public const uint SDL_AUDIO_ALLOW_ANY_CHANGE =
         SDL_AUDIO_ALLOW_FREQUENCY_CHANGE |
         SDL_AUDIO_ALLOW_FORMAT_CHANGE |
         SDL_AUDIO_ALLOW_CHANNELS_CHANGE |

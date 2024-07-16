@@ -1,15 +1,14 @@
-﻿using Frosty.Scripts.Abstracts;
-using Frosty.Scripts.Components;
-using Frosty.Scripts.Core;
-using Frosty.Scripts.DataStructures;
-using Frosty.Scripts.Effects;
-using Frosty.Scripts.Entities;
+﻿using Frosty.Scripts.Components;
 using Frosty.Scripts.Utils;
 using System.Numerics;
 using Foster.Framework;
 using Timer = Frosty.Scripts.Components.Timer;
+using Frosty.Scripts.GameObjects.Entities;
+using Frosty.Scripts.GameObjects;
+using Frosty.Scripts.GameObjects.Effects;
+using Frosty.Scripts.Core;
 
-namespace Frosty.Scripts.Levels;
+namespace Frosty.Scripts.Scenes.Levels;
 
 public class Level : Scene
 {
@@ -30,7 +29,7 @@ public class Level : Scene
     bool playerAtFinishLineOnce = false;
 
     public float transitionOpacity;
-    
+
     Timer playerDyingTimer;
     Timer autoSaveTimer;
     Timer playerWalkSoundEnableTimer;
@@ -45,7 +44,7 @@ public class Level : Scene
         transitionOpacity = 1;
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
 
-        levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2, 12), new TileCollection(["Assets", "Backgrounds", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]));
+        levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2), new TileCollection(["Assets", "Backgrounds", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]), this);
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
         player = new Player(new Vector2(100, 100));
         player.muteFootStep = true;
@@ -63,7 +62,7 @@ public class Level : Scene
         }
 
         playerDyingTimer = new Timer(1, true);
-        
+
         playerDyingTimer.OnTimeout += () =>
         {
             Startup();
@@ -183,9 +182,7 @@ public class Level : Scene
                         break;
 
                     case TileType.Spike:
-                        Rect spikeRect = new Rect(tileObject.BoundingBox.X + 10, tileObject.BoundingBox.Y + 5, tileObject.BoundingBox.Width - 20, tileObject.BoundingBox.Height - 10);
-
-                        if (player.BoundingBox.Overlaps(spikeRect))
+                        if (player.BoundingBox.Overlaps(tileObject.BoundingBox))
                         {
                             player.Die = true;
                         }
@@ -208,6 +205,12 @@ public class Level : Scene
             if (player.position.X < player.size.X * Game.Scale / 2)
             {
                 player.position.X = player.size.X * Game.Scale / 2;
+            }
+
+            if (player.position.Y < player.size.Y * Game.Scale / 2)
+            {
+                player.position.Y = player.size.Y * Game.Scale / 2;
+                player.velocity.Y = 0;
             }
 
             if (player.position.Y > App.Height)
@@ -313,7 +316,7 @@ public class Level : Scene
         batcher.Rect(0, 0, App.Width, App.Height, new Color(0, 0, 0, transitionOpacity));
 
         if (Paused)
-        { 
+        {
             levelEditor.DrawWhenPaused(batcher);
             Helper.DrawTextCentered("Paused", new Vector2(App.Width / 2, App.Height / 2), Color.White, Game.M5x7Menu, batcher);
         }

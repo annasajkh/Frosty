@@ -1,11 +1,10 @@
 ﻿using Foster.Framework;
-using Frosty.Scripts.Abstracts;
-using Frosty.Scripts.Core;
 using System.Numerics;
 using Timer = Frosty.Scripts.Components.Timer;
 using Color = Foster.Framework.Color;
+using Frosty.Scripts.Core;
 
-namespace Frosty.Scripts.Effects;
+namespace Frosty.Scripts.GameObjects.Effects;
 
 public class PlayerDieParticle : GameObject
 {

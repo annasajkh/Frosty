@@ -2,7 +2,7 @@
 using Frosty.Scripts.Core;
 using System.Numerics;
 
-namespace Frosty.Scripts.Abstracts;
+namespace Frosty.Scripts.GameObjects;
 
 /// <summary>
 /// Anything that can exist in the world is a GameObject
@@ -17,13 +17,13 @@ public class GameObject
     /// <summary>
     /// The rectangle that cover the entire object
     /// </summary>
-    public Rect BoundingBox
+    public virtual Rect BoundingBox
     {
         get
         {
             return new Rect(position - scale * size / 2, position + scale * size / 2);
         }
-    }    
+    }
 
     public GameObject(Vector2 position, float rotation, Vector2 scale, Vector2 size)
     {
@@ -36,7 +36,7 @@ public class GameObject
     public virtual void Draw(Batcher batcher)
     {
         if (Game.DebugMode)
-        { 
+        {
             batcher.RectLine(BoundingBox, 1, Color.Green);
         }
     }

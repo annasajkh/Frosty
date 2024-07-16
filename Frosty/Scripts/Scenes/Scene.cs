@@ -1,6 +1,6 @@
 ﻿using Foster.Framework;
 
-namespace Frosty.Scripts.Abstracts;
+namespace Frosty.Scripts.Scenes;
 
 /// <summary>
 /// Scene is a place where things happened like main menu or the game world
