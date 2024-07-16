@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<PublishAot>True</PublishAot>
+		<PublishSingleFile>True</PublishSingleFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
