@@ -21,14 +21,14 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Publish Windows
-      run: dotnet publish ./Frosty/Frosty.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/windows
+      run: dotnet publish ./Frosty/Frosty.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish/windows
     - name: Zip Windows artifact
-      run: Compress-Archive -Path ./publish/windows/* -DestinationPath ./Frosty-windows.zip
+      run: Compress-Archive -Path ./publish/windows/* -DestinationPath ./Frosty-windows-x86_64.zip
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v3
       with:
         name: windows-app
-        path: ./Frosty-windows.zip
+        path: ./Frosty-windows-x86_64.zip
 
   publish-linux:
     runs-on: ubuntu-latest
@@ -39,14 +39,14 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Publish Linux
-      run: dotnet publish ./Frosty/Frosty.csproj -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/linux
+      run: dotnet publish ./Frosty/Frosty.csproj --configuration Release --runtime linux-x64 --self-contained true --output ./publish/linux
     - name: Zip Linux artifact
-      run: zip -r ./Frosty-linux.zip ./publish/linux
+      run: zip -r ./Frosty-linux-x86_64.zip ./publish/linux
     - name: Upload Linux artifact
       uses: actions/upload-artifact@v3
       with:
         name: linux-app
-        path: ./Frosty-linux.zip
+        path: ./Frosty-linux-x86_64.zip
 
   create-release:
     needs: [publish-windows, publish-linux]
@@ -64,5 +64,5 @@ jobs:
         gh release create ${{ github.ref_name }} \
           --title "Release ${{ github.ref_name }}" \
           --generate-notes \
-          ./windows-app/Frosty-windows.zip \
-          ./linux-app/Frosty-linux.zip
+          ./windows-app/Frosty-windows-x86_64.zip \
+          ./linux-app/Frosty-linux-x86_64.zip
