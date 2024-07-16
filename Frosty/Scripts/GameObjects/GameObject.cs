@@ -35,7 +35,7 @@ public class GameObject
 
     public virtual void Draw(Batcher batcher)
     {
-        if (Game.DebugMode)
+        if (Game.ShowColliders)
         {
             batcher.RectLine(BoundingBox, 1, Color.Green);
         }

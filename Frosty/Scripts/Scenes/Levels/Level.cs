@@ -15,6 +15,7 @@ public class Level : Scene
     public bool Paused { get; private set; } = false;
 
     protected LevelEditor levelEditor;
+    
     protected Player player;
     protected Snowing snowing;
     protected float transitionSpeed = 1;
@@ -45,6 +46,13 @@ public class Level : Scene
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
 
         levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2), new TileCollection(["Assets", "Backgrounds", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]), this);
+
+#if DEBUG
+        levelEditor.Editing = true;
+#else
+        levelEditor.Editing = false;
+#endif
+
         snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
         player = new Player(new Vector2(100, 100));
         player.muteFootStep = true;

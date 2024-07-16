@@ -13,7 +13,7 @@ public sealed class Game : Module
     public static float Scale { get; } = 3;
     public static int TileSize { get; } = 16;
 
-    public static bool DebugMode { get; } = false;
+    public static bool ShowColliders { get; } = false;
 
     public static SpriteFont M5x7Menu { get; } = new SpriteFont(Path.Combine("Assets", "Fonts", "m5x7.ttf"), 64);
     public static SpriteFont M5x7Dialog { get; } = new SpriteFont(Path.Combine("Assets", "Fonts", "m5x7.ttf"), 32);
