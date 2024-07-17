@@ -2,17 +2,17 @@
 
 namespace Frosty.Scripts.Scenes.Levels;
 
-public class Level2 : Level
+public class LevelE : Level
 {
     public override void Startup()
     {
         base.Startup();
 
-        player.position = new Vector2(30, 335);
+        player.position = new Vector2(30, 450);
 
         playerAtFinishLine += () =>
         {
-            GoToNextLevel("Level3");
+            GoToNextLevel("LevelF");
         };
     }
 }

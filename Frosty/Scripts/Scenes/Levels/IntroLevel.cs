@@ -20,7 +20,7 @@ public class IntroLevel : Level
 
         playerAtFinishLine += () =>
         {
-            GoToNextLevel("Level1");
+            GoToNextLevel("LevelA");
         };
 
         dialogBox.DialogFinished += () =>

@@ -1,0 +1,489 @@
+{
+  "asepritePath": [
+    "Assets",
+    "Graphics",
+    "Tilesets",
+    "tileset.ase"
+  ],
+  "collectionAsepritePath": [
+    "Assets",
+    "Graphics",
+    "Tilesets",
+    "decoration.ase"
+  ],
+  "tileWidth": 16,
+  "tileHeight": 16,
+  "totalRow": 8,
+  "totalColumn": 8,
+  "tiles": [
+    {
+      "tileType": 2,
+      "x": 24,
+      "y": 504,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 72,
+      "y": 504,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 120,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 168,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 216,
+      "y": 504,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 264,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 312,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 360,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 456,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 504,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 552,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 600,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 648,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 696,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 744,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 792,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 840,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 888,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
+      "x": 936,
+      "y": 504,
+      "rectX": 112,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 408,
+      "y": 504,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 216,
+      "y": 456,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 408,
+      "y": 456,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 600,
+      "y": 456,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 792,
+      "y": 456,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 120,
+      "y": 360,
+      "rectX": 32,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 504,
+      "y": 312,
+      "rectX": 96,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 696,
+      "y": 312,
+      "rectX": 96,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 120,
+      "y": 312,
+      "rectX": 96,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 504,
+      "y": 360,
+      "rectX": 32,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 312,
+      "y": 312,
+      "rectX": 96,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 312,
+      "y": 360,
+      "rectX": 32,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 696,
+      "y": 360,
+      "rectX": 32,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 888,
+      "y": 312,
+      "rectX": 96,
+      "rectY": 64,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 888,
+      "y": 360,
+      "rectX": 32,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 120,
+      "y": 264,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 312,
+      "y": 264,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 504,
+      "y": 264,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 696,
+      "y": 264,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 1,
+      "x": 888,
+      "y": 264,
+      "rectX": 16,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 984,
+      "y": 504,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1032,
+      "y": 504,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1080,
+      "y": 504,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 456,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 408,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 360,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 312,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 24,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 72,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 120,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 168,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 216,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 2,
+      "x": 1128,
+      "y": 264,
+      "rectX": 48,
+      "rectY": 16,
+      "rectWidth": 16,
+      "rectHeight": 16
+    }
+  ],
+  "tileCollection": []
+}

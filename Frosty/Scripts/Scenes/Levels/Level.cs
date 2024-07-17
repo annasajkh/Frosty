@@ -34,7 +34,6 @@ public class Level : Scene
     public float transitionOpacity;
 
     Timer playerDyingTimer;
-
     Timer playerWalkSoundEnableTimer;
 
     string filePath;
@@ -77,6 +76,7 @@ public class Level : Scene
             Startup();
             player.Die = false;
         };
+
     }
 
     public void GoToNextLevel(string name)
@@ -113,14 +113,6 @@ public class Level : Scene
 
     public override void Update()
     {
-
-#if DEBUG
-        if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Pressed(Keys.S))
-        {
-            SaveLevel();
-        }
-#endif
-
         if (Input.Keyboard.Pressed(Keys.P))
         {
             Paused = !Paused;

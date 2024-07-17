@@ -31,13 +31,18 @@ public sealed class Game : Module
     public override void Startup()
     {
         SceneManager.AddScene("IntroLevel", new IntroLevel());
-        SceneManager.AddScene("Level1", new Level1());
-        SceneManager.AddScene("Level2", new Level2());
-        SceneManager.AddScene("Level3", new Level3());
-        SceneManager.AddScene("Level4", new Level4());
+        SceneManager.AddScene("LevelA", new LevelA());
+        SceneManager.AddScene("LevelB", new LevelB());
+        SceneManager.AddScene("LevelC", new LevelC());
+        SceneManager.AddScene("LevelD", new LevelD());
+        SceneManager.AddScene("LevelE", new LevelE());
+        SceneManager.AddScene("LevelF", new LevelF());
+        SceneManager.AddScene("LevelG", new LevelG());
+        SceneManager.AddScene("LevelH", new LevelH());
+        SceneManager.AddScene("LevelI", new LevelI());
 
 #if DEBUG
-        SceneManager.ChangeScene("Level4");
+        //SceneManager.ChangeScene("LevelH");
 #endif
     }
 
