@@ -1,14 +1,16 @@
 {
-  "asepritePath": [
-    "Assets",
-    "Tilesets",
-    "tileset.ase"
-  ],
-  "collectionAsepritePath": [
-    "Assets",
-    "Backgrounds",
-    "decoration.ase"
-  ],
+    "asepritePath": [
+        "Assets",
+        "Graphics",
+        "Tilesets",
+        "tileset.ase"
+      ],
+      "collectionAsepritePath": [
+        "Assets",
+        "Graphics",
+        "Tilesets",
+        "decoration.ase"
+      ],
   "tileWidth": 16,
   "tileHeight": 16,
   "totalRow": 8,
@@ -412,15 +414,6 @@
     },
     {
       "tileType": 0,
-      "x": 600,
-      "y": 216,
-      "rectX": 0,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    },
-    {
-      "tileType": 0,
       "x": 264,
       "y": 24,
       "rectX": 64,
@@ -441,8 +434,8 @@
       "tileType": 0,
       "x": 360,
       "y": 72,
-      "rectX": 16,
-      "rectY": 32,
+      "rectX": 80,
+      "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
     },
@@ -450,8 +443,8 @@
       "tileType": 0,
       "x": 360,
       "y": 24,
-      "rectX": 64,
-      "rectY": 0,
+      "rectX": 16,
+      "rectY": 32,
       "rectWidth": 16,
       "rectHeight": 16
     },
@@ -459,7 +452,7 @@
       "tileType": 0,
       "x": 408,
       "y": 24,
-      "rectX": 64,
+      "rectX": 112,
       "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
@@ -468,7 +461,7 @@
       "tileType": 0,
       "x": 456,
       "y": 24,
-      "rectX": 64,
+      "rectX": 112,
       "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
@@ -477,7 +470,7 @@
       "tileType": 0,
       "x": 504,
       "y": 24,
-      "rectX": 64,
+      "rectX": 112,
       "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
@@ -486,33 +479,6 @@
       "tileType": 0,
       "x": 552,
       "y": 24,
-      "rectX": 16,
-      "rectY": 32,
-      "rectWidth": 16,
-      "rectHeight": 16
-    },
-    {
-      "tileType": 0,
-      "x": 456,
-      "y": 72,
-      "rectX": 112,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    },
-    {
-      "tileType": 0,
-      "x": 408,
-      "y": 72,
-      "rectX": 112,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    },
-    {
-      "tileType": 0,
-      "x": 504,
-      "y": 72,
       "rectX": 112,
       "rectY": 0,
       "rectWidth": 16,
@@ -603,8 +569,8 @@
       "tileType": 0,
       "x": 648,
       "y": 264,
-      "rectX": 64,
-      "rectY": 0,
+      "rectX": 96,
+      "rectY": 16,
       "rectWidth": 16,
       "rectHeight": 16
     },
@@ -630,8 +596,8 @@
       "tileType": 0,
       "x": 648,
       "y": 216,
-      "rectX": 96,
-      "rectY": 16,
+      "rectX": 48,
+      "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
     },
@@ -1089,8 +1055,8 @@
       "tileType": 0,
       "x": 600,
       "y": 264,
-      "rectX": 96,
-      "rectY": 16,
+      "rectX": 16,
+      "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
     },
@@ -1294,10 +1260,163 @@
     },
     {
       "tileType": 0,
-      "x": 552,
+      "x": 648,
+      "y": 312,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 984,
+      "y": 312,
+      "rectX": 16,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1032,
+      "y": 312,
+      "rectX": 16,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 984,
+      "y": 360,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 984,
+      "y": 408,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 984,
+      "y": 456,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1032,
+      "y": 408,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1032,
+      "y": 360,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1032,
+      "y": 456,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1032,
+      "y": 504,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 984,
+      "y": 504,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1080,
+      "y": 312,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1128,
+      "y": 264,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1128,
+      "y": 216,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1128,
+      "y": 168,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1128,
+      "y": 120,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1128,
       "y": 72,
-      "rectX": 0,
-      "rectY": 16,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1128,
+      "y": 24,
+      "rectX": 64,
+      "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
     },
@@ -1309,16 +1428,35 @@
       "rectY": 16,
       "rectWidth": 16,
       "rectHeight": 16
+    }
+  ],
+  "tileCollection": [
+    {
+      "tileType": 3,
+      "x": 360,
+      "y": 456,
+      "rectX": 48,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
     },
     {
-      "tileType": 0,
+      "tileType": 3,
+      "x": 168,
+      "y": 264,
+      "rectX": 48,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 3,
       "x": 648,
-      "y": 312,
-      "rectX": 64,
+      "y": 120,
+      "rectX": 48,
       "rectY": 0,
       "rectWidth": 16,
       "rectHeight": 16
     }
-  ],
-  "tileCollection": []
+  ]
 }

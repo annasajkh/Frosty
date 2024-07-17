@@ -1,5 +1,6 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Core;
+using Frosty.Scripts.Interfaces;
 using System.Numerics;
 
 namespace Frosty.Scripts.GameObjects;
@@ -7,7 +8,7 @@ namespace Frosty.Scripts.GameObjects;
 /// <summary>
 /// Anything that can exist in the world is a GameObject
 /// </summary>
-public class GameObject
+public abstract class GameObject : IDrawable, IUpdateable
 {
     public Vector2 position;
     public float rotation;
@@ -32,6 +33,8 @@ public class GameObject
         this.scale = scale;
         this.size = size;
     }
+
+    public abstract void Update();
 
     public virtual void Draw(Batcher batcher)
     {

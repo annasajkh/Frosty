@@ -1,6 +1,7 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Components;
 using Frosty.Scripts.Core;
+using Frosty.Scripts.GameObjects.Entities;
 using System.Numerics;
 
 namespace Frosty.Scripts.GameObjects.StaticObjects;
@@ -9,28 +10,21 @@ public class TileObject : GameObject
 {
     public Texture Texture { get; }
     public Rect TextureRect { get; }
-    public TileType tileType;
 
-    public override Rect BoundingBox
-    {
-        get
-        {
-            if (tileType == TileType.Spike)
-            {
-                return new Rect(base.BoundingBox.X + 10, base.BoundingBox.Y + 5, base.BoundingBox.Width - 20, base.BoundingBox.Height - 10);
-            }
-            else
-            {
-                return base.BoundingBox;
-            }
-        }
-    }
-
-    public TileObject(Vector2 position, Vector2 scale, Texture texture, Rect rect, TileType tileType) : base(position, 0, scale, Vector2.One * Game.TileSize)
+    public TileObject(Vector2 position, Vector2 scale, Texture texture, Rect rect) : base(position, 0, scale, Vector2.One * Game.TileSize)
     {
         Texture = texture;
         TextureRect = rect;
-        this.tileType = tileType;
+    }
+
+    public virtual void ResolveCollision(Entity entity)
+    {
+
+    }
+
+    public override void Update()
+    {
+
     }
 
     public override void Draw(Batcher batcher)

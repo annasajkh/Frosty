@@ -3,6 +3,8 @@ using Frosty.Scripts.Components;
 using Frosty.Scripts.Components.Audio;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.GameObjects.Effects;
+using Frosty.Scripts.GameObjects.StaticObjects;
+using Frosty.Scripts.GameObjects.StaticTiles;
 using System.Numerics;
 using Timer = Frosty.Scripts.Components.Timer;
 namespace Frosty.Scripts.GameObjects.Entities;
@@ -33,11 +35,11 @@ public class Player : Entity
     SoundEffect playerJump;
     SoundEffect playerDied;
 
-    private static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Player", "Graphics", "player_idle_left.ase"));
-    private static Aseprite playerIdleRight = new Aseprite(Path.Combine("Assets", "Player", "Graphics", "player_idle_right.ase"));
+    private static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_idle_left.ase"));
+    private static Aseprite playerIdleRight = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_idle_right.ase"));
 
-    private static Aseprite playerWalkRight = playerWalkRight = new Aseprite(Path.Combine("Assets", "Player", "Graphics", "player_walk_right.ase"));
-    private static Aseprite playerWalkLeft = playerWalkLeft = new Aseprite(Path.Combine("Assets", "Player", "Graphics", "player_walk_left.ase"));
+    private static Aseprite playerWalkRight = playerWalkRight = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_walk_right.ase"));
+    private static Aseprite playerWalkLeft = playerWalkLeft = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_walk_left.ase"));
 
     Timer walkTimer;
 
@@ -57,16 +59,16 @@ public class Player : Entity
             shouldPlayWalkSound = true;
         };
 
-        playerWalkOnSnowSounds = [SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_0.ogg"), volume: 100),
-                                  SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_1.ogg"), volume: 100),
-                                  SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Snow Steps", "snow_step_2.ogg"), volume: 100)];
+        playerWalkOnSnowSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_0.ogg"), volume: 100),
+                                  SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_1.ogg"), volume: 100),
+                                  SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_2.ogg"), volume: 100)];
 
-        playerWalkOnIceSounds = [SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_0.ogg"), volume: 255),
-                                 SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_1.ogg"), volume: 255),
-                                 SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg"), volume: 255)];
+        playerWalkOnIceSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_0.ogg"), volume: 255),
+                                 SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_1.ogg"), volume: 255),
+                                 SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg"), volume: 255)];
 
-        playerJump = SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "player_jump.ogg"), volume: 100);
-        playerDied = SoundEffect.Load(Path.Combine("Assets", "Player", "Audio", "Sound Effects", "player_died.ogg"), volume: 255);
+        playerJump = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_jump.ogg"), volume: 100);
+        playerDied = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_died.ogg"), volume: 255);
 
         AnimationManager.AddAnimation("player_idle_left", new Animation(playerIdleLeft, playerIdleLeft.Width, playerIdleLeft.Height, 0.5f, true));
         AnimationManager.AddAnimation("player_idle_right", new Animation(playerIdleRight, playerIdleRight.Width, playerIdleRight.Height, 0.5f, true));
@@ -77,17 +79,15 @@ public class Player : Entity
         previousFacing = PreviousFacing.Right;
     }
 
-    public void PlayWalkSound(TileType tileType)
+    public void PlayWalkSound(TileObject tileObject)
     {
-        switch (tileType)
+        switch (tileObject)
         {
-            case TileType.Solid:
+            case Solid:
                 Game.SoundEffectPlayer.SetSource(playerWalkOnSnowSounds[Game.Random.Next() % playerWalkOnSnowSounds.Length]);
                 Game.SoundEffectPlayer.Play();
                 break;
-            case TileType.Spike:
-                break;
-            case TileType.Ice:
+            case Ice:
                 Game.SoundEffectPlayer.SetSource(playerWalkOnIceSounds[Game.Random.Next() % playerWalkOnIceSounds.Length]);
                 Game.SoundEffectPlayer.Play();
                 break;

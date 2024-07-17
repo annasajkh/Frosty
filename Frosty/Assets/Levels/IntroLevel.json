@@ -1,12 +1,14 @@
 {
   "asepritePath": [
     "Assets",
+    "Graphics",
     "Tilesets",
     "tileset.ase"
   ],
   "collectionAsepritePath": [
     "Assets",
-    "Backgrounds",
+    "Graphics",
+    "Tilesets",
     "decoration.ase"
   ],
   "tileWidth": 16,
@@ -565,24 +567,6 @@
     },
     {
       "tileType": 0,
-      "x": 984,
-      "y": 456,
-      "rectX": 64,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    },
-    {
-      "tileType": 0,
-      "x": 984,
-      "y": 504,
-      "rectX": 64,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    },
-    {
-      "tileType": 0,
       "x": 1032,
       "y": 408,
       "rectX": 16,
@@ -592,8 +576,8 @@
     },
     {
       "tileType": 0,
-      "x": 1032,
-      "y": 456,
+      "x": 1080,
+      "y": 360,
       "rectX": 64,
       "rectY": 0,
       "rectWidth": 16,
@@ -601,8 +585,62 @@
     },
     {
       "tileType": 0,
-      "x": 1032,
-      "y": 504,
+      "x": 1080,
+      "y": 312,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1080,
+      "y": 264,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1080,
+      "y": 216,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1080,
+      "y": 168,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1080,
+      "y": 120,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1080,
+      "y": 72,
+      "rectX": 64,
+      "rectY": 0,
+      "rectWidth": 16,
+      "rectHeight": 16
+    },
+    {
+      "tileType": 0,
+      "x": 1080,
+      "y": 24,
       "rectX": 64,
       "rectY": 0,
       "rectWidth": 16,

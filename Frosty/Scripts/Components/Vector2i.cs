@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Frosty.Scripts.Components;
 
-public struct Vector2i : IEquatable<Vector2i>, IFormattable
+public readonly struct Vector2i : IEquatable<Vector2i>, IFormattable
 {
-    public int X;
-    public int Y;
+    public int X { get; }
+    public int Y { get; }
 
     public Vector2i(int x, int y)
     {

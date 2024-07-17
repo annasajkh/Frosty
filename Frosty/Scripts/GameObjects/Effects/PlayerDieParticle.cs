@@ -32,7 +32,7 @@ public class PlayerDieParticle : GameObject
         rotationDir = Game.Random.NextSingle() > 0.5f ? 1 : -1;
     }
 
-    public void Update()
+    public override void Update()
     {
         destroyTimer.Update();
 

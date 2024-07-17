@@ -12,7 +12,7 @@ public class DialogBox : GameObject
 
     float CharPerSeconds { get; set; }
 
-    static Texture dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
+    static Texture dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "Graphics", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
 
     Timer speakDelayTimer;
 
@@ -60,7 +60,7 @@ public class DialogBox : GameObject
         speakDelayTimer.Start();
     }
 
-    public void Update()
+    public override void Update()
     {
         upAndDownArrow = (float)Math.Sin(Time.Duration.TotalSeconds * 5);
 

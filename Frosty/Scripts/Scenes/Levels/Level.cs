@@ -7,6 +7,7 @@ using Frosty.Scripts.GameObjects.Entities;
 using Frosty.Scripts.GameObjects;
 using Frosty.Scripts.GameObjects.Effects;
 using Frosty.Scripts.Core;
+using Frosty.Scripts.GameObjects.StaticTiles;
 
 namespace Frosty.Scripts.Scenes.Levels;
 
@@ -15,7 +16,7 @@ public class Level : Scene
     public bool Paused { get; private set; } = false;
 
     protected LevelEditor levelEditor;
-    
+
     protected Player player;
     protected Snowing snowing;
     protected float transitionSpeed = 1;
@@ -28,11 +29,12 @@ public class Level : Scene
     bool fadeInTransitionFinishedOnce = false;
     bool fadeOutTransitionFinishedOnce = false;
     bool playerAtFinishLineOnce = false;
+    bool changeSceneRunOnce;
 
     public float transitionOpacity;
 
     Timer playerDyingTimer;
-    Timer autoSaveTimer;
+
     Timer playerWalkSoundEnableTimer;
 
     string filePath;
@@ -45,7 +47,7 @@ public class Level : Scene
         transitionOpacity = 1;
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
 
-        levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 2), new TileCollection(["Assets", "Backgrounds", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]), this);
+        levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Graphics", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 8), new TileCollection(["Assets", "Graphics", "Tilesets", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]), this);
 
 #if DEBUG
         levelEditor.Editing = true;
@@ -70,20 +72,11 @@ public class Level : Scene
         }
 
         playerDyingTimer = new Timer(1, true);
-
         playerDyingTimer.OnTimeout += () =>
         {
             Startup();
             player.Die = false;
         };
-
-        autoSaveTimer = new Timer(1, false);
-        autoSaveTimer.OnTimeout += () =>
-        {
-            SaveLevel();
-        };
-
-        autoSaveTimer.Start();
     }
 
     public void GoToNextLevel(string name)
@@ -93,15 +86,20 @@ public class Level : Scene
 
         fadeOutTransitionFinished += () =>
         {
-            Game.SceneManager.ChangeScene(name);
+            if (!changeSceneRunOnce)
+            {
+                Game.SceneManager.ChangeScene(name);
+                changeSceneRunOnce = true;
+            }
         };
     }
 
+
+#if DEBUG
     public void SaveLevel()
     {
         levelEditor.Save(Path.Combine("Assets", "Levels", $"{GetType().Name}.json"));
 
-#if DEBUG
         try
         {
             levelEditor.Save(Path.Combine("..", "..", "..", "Assets", "Levels", $"{GetType().Name}.json"));
@@ -110,22 +108,18 @@ public class Level : Scene
         {
             // Ignore the fucking error
         }
-#endif
-        if (File.Exists(filePath))
-        {
-            levelEditor.Tiles.Clear();
-            levelEditor.Load(filePath);
-        }
     }
+#endif
 
     public override void Update()
     {
-        autoSaveTimer.Update();
 
+#if DEBUG
         if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Pressed(Keys.S))
         {
             SaveLevel();
         }
+#endif
 
         if (Input.Keyboard.Pressed(Keys.P))
         {
@@ -151,18 +145,23 @@ public class Level : Scene
             {
                 Game.SceneManager.ChangeScene("MainMenu");
             }
-
             player.Update();
 
-            foreach (var tileObject in levelEditor.Tiles.Values)
+
+            foreach (var tileObject in levelEditor.Tiles.Reverse())
             {
-                if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.BoundingBox))
+                tileObject.Value.Update();
+            }
+
+            foreach (var tileObject in levelEditor.Tiles.Reverse())
+            {
+                if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.Value.BoundingBox))
                 {
                     if (!player.playSoundWalkOnce)
                     {
                         if (!player.muteFootStep)
                         {
-                            player.PlayWalkSound(tileObject.tileType);
+                            player.PlayWalkSound(tileObject.Value);
                         }
                         player.playSoundWalkOnce = true;
                     }
@@ -171,42 +170,18 @@ public class Level : Scene
                     {
                         if (!player.muteFootStep)
                         {
-                            player.PlayWalkSound(tileObject.tileType);
+                            player.PlayWalkSound(tileObject.Value);
                         }
 
                         player.shouldPlayWalkSound = false;
                     }
                 }
 
-                switch (tileObject.tileType)
+                tileObject.Value.ResolveCollision(player);
+
+                if (tileObject.Value is BrittleIce brittleIce && brittleIce.Break)
                 {
-                    case TileType.Solid:
-                        if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.BoundingBox))
-                        {
-                            player.friction = Game.entityFriction;
-                        }
-
-                        player.ResolveAwayFrom(tileObject);
-                        break;
-
-                    case TileType.Spike:
-                        if (player.BoundingBox.Overlaps(tileObject.BoundingBox))
-                        {
-                            player.Die = true;
-                        }
-                        break;
-
-                    case TileType.Ice:
-                        if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.BoundingBox))
-                        {
-                            player.friction = Game.entityOnIceFriction;
-                        }
-
-                        player.ResolveAwayFrom(tileObject);
-                        break;
-
-                    default:
-                        break;
+                    levelEditor.Tiles.Remove(tileObject.Key);
                 }
             }
 
@@ -278,7 +253,7 @@ public class Level : Scene
 
         foreach (var tileObject in levelEditor.Tiles.Values)
         {
-            if (tileObject.tileType == TileType.Decoration)
+            if (tileObject is Decoration)
             {
                 tileObject.Draw(batcher);
             }
@@ -286,7 +261,7 @@ public class Level : Scene
 
         foreach (var tileObject in levelEditor.Tiles.Values)
         {
-            if (tileObject.tileType != TileType.Decoration)
+            if (tileObject is not Decoration)
             {
                 tileObject.Draw(batcher);
             }

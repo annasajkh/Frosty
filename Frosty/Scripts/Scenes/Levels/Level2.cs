@@ -9,5 +9,10 @@ public class Level2 : Level
         base.Startup();
 
         player.position = new Vector2(30, 335);
+
+        playerAtFinishLine += () =>
+        {
+            GoToNextLevel("Level3");
+        };
     }
 }

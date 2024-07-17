@@ -17,7 +17,7 @@ public class Snow : GameObject
         opacity = Game.Random.Next() % 250 + 5;
     }
 
-    public void Update()
+    public override void Update()
     {
         position += Vector2.UnitY * FallingSpeed * Time.Delta;
         rotation += Time.Delta;

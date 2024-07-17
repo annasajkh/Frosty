@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Frosty.Scripts.GameObjects.StaticObjects;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.Scenes.Levels;
+using Frosty.Scripts.GameObjects.StaticTiles;
 
 namespace Frosty.Scripts.Components;
 
@@ -45,13 +46,13 @@ public class LevelEditor
 
         foreach (var tile in Tiles)
         {
-            if (tile.Value.tileType == TileType.Decoration)
+            if (tile.Value is Decoration)
             {
-                tileCollectionToSave.Add(new Tile(tile.Value.position, tile.Value.TextureRect, tile.Value.tileType));
+                tileCollectionToSave.Add(ToTile(tile.Value));
             }
             else
             {
-                tilesToSave.Add(new Tile(tile.Value.position, tile.Value.TextureRect, tile.Value.tileType));
+                tilesToSave.Add(ToTile(tile.Value));
             }
         }
 
@@ -86,12 +87,12 @@ public class LevelEditor
 
         foreach (var tileData in levelData.tiles)
         {
-            Tiles.Add(ToTileObject(tileData, tileData.tileType).GetHashCode(), ToTileObject(tileData, tileData.tileType));
+            Tiles.Add(new Vector2i(tileData.x, tileData.y).GetHashCode(), ToTileObject(tileData, tileData.tileType));
         }
 
         foreach (var tileData in levelData.tileCollection)
         {
-            Tiles.Add(ToTileObject(tileData, tileData.tileType).GetHashCode(), ToTileObject(tileData, tileData.tileType));
+            Tiles.Add(new Vector2i(tileData.x, tileData.y).GetHashCode(), ToTileObject(tileData, tileData.tileType));
         }
     }
 
@@ -123,7 +124,6 @@ public class LevelEditor
 
                     TileType tileType = TileType.Solid;
 
-                    // If CurrentTileIndex is a spesific index change it to a spike
                     if (CurrentTileIndex == 9 || CurrentTileIndex == 10 || CurrentTileIndex == 12 || CurrentTileIndex == 13)
                     {
                         tileType = TileType.Spike;
@@ -131,6 +131,10 @@ public class LevelEditor
                     else if (CurrentTileIndex == 11)
                     {
                         tileType = TileType.Ice;
+                    }
+                    else if (CurrentTileIndex == 39)
+                    {
+                        tileType = TileType.BrittleIce;
                     }
 
                     tileObject = ToTileObject(new Tile(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, TileMap.GetRect(CurrentTileIndex), tileType), tileType);
@@ -214,7 +218,7 @@ public class LevelEditor
         {
             for (int i = 0; i < TileCollection.Tiles.Count; i++)
             {
-                Rect tileCollectionRect = new Rect(TileCollection.Tiles[i].rectX, TileCollection.Tiles[i].rectY, TileCollection.Tiles[i].rectWidth, TileCollection.Tiles[i].rectHeight);
+                Rect tileCollectionRect = new Rect(TileCollection.Tiles[i].rectX * Game.Scale, TileCollection.Tiles[i].rectY * Game.Scale, TileCollection.Tiles[i].rectWidth * Game.Scale, TileCollection.Tiles[i].rectHeight * Game.Scale);
 
                 if (tileCollectionRect.Contains(Input.Mouse.Position) && Input.Mouse.Pressed(MouseButtons.Left) && Level.Paused)
                 {
@@ -228,17 +232,17 @@ public class LevelEditor
     {
         if (tileType == TileType.Decoration)
         {
-            return new TileObject(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, TileCollection.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight), tile.tileType);
+            return Helper.CreateTileObjectUsingTileType(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, TileCollection.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight), tile.tileType);
         }
         else
         {
-            return new TileObject(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, TileMap.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight), tile.tileType);
+            return Helper.CreateTileObjectUsingTileType(new Vector2(tile.x, tile.y), Vector2.One * Game.Scale, TileMap.Texture, new Rect(tile.rectX, tile.rectY, tile.rectWidth, tile.rectHeight), tile.tileType);
         }
     }
 
     public Tile ToTile(TileObject tileObject)
     {
-        return new Tile(tileObject.position, tileObject.TextureRect, tileObject.tileType);
+        return new Tile(tileObject.position, tileObject.TextureRect, Helper.TileObjectToTileType(tileObject));
     }
 
     public void DrawWhenPaused(Batcher batcher)
@@ -257,24 +261,31 @@ public class LevelEditor
         }
         batcher.PopMatrix();
 
-        batcher.PushMatrix(Vector2.Zero, Vector2.One, Vector2.Zero, 0);
+        
         if (EditingMode == EditingMode.TileSet)
         {
+            batcher.PushMatrix(Vector2.Zero, Vector2.One, Vector2.Zero, 0);
+
             for (int i = 0; i < TileMap.RowTotal * TileMap.ColumnTotal; i++)
             {
                 Rect tileMapRect = TileMap.GetRect(i) * 3;
                 batcher.RectLine(tileMapRect, 1, Color.Red);
             }
+
+            batcher.PopMatrix();
         }
         else if (EditingMode == EditingMode.TileCollection)
         {
+            batcher.PushMatrix(Vector2.Zero, Vector2.One * Game.Scale, Vector2.Zero, 0);
+
             for (int i = 0; i < TileCollection.Tiles.Count; i++)
             {
                 Rect tileCollectionRect = new Rect(TileCollection.Tiles[i].rectX, TileCollection.Tiles[i].rectY, TileCollection.Tiles[i].rectWidth, TileCollection.Tiles[i].rectHeight);
                 batcher.RectLine(tileCollectionRect, 1, Color.Red);
             }
+
+            batcher.PopMatrix();
         }
-        batcher.PopMatrix();
 
         batcher.PushMatrix(Vector2.Zero, Vector2.One * Game.Scale, Vector2.Zero, 0);
         switch (EditingMode)

@@ -106,7 +106,7 @@ public class Entity : GameObject
         }
     }
 
-    public virtual void Update()
+    public override void Update()
     {
         IsOnGround = false;
 

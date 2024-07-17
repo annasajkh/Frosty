@@ -8,6 +8,7 @@ public enum TileType
     Solid,
     Spike,
     Ice,
+    BrittleIce,
     Decoration
 }
 
