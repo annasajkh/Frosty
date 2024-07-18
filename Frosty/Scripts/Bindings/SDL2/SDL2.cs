@@ -40,7 +40,11 @@ public static class SDL
 {
     #region SDL2# Variables
 
-    private const string nativeLibName = "SDL2";
+#if WINDOWS
+    private const string nativeLibName = "SDL2.dll";
+#elif LINUX
+    private const string nativeLibName = "libSDL2.so";
+#endif
 
     #endregion
 

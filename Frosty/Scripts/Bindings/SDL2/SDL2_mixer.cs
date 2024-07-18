@@ -37,7 +37,11 @@ public static class SDL_mixer
     #region SDL2# Variables
 
     /* Used by DllImport to load the native library. */
-    private const string nativeLibName = "SDL2_mixer";
+#if WINDOWS
+    private const string nativeLibName = "SDL2_mixer.dll";
+#elif LINUX
+    private const string nativeLibName = "libSDL2_mixer.so";
+#endif
 
     #endregion
 

@@ -26,6 +26,14 @@
 		<IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(IsWindows)' == 'true'">
+		<DefineConstants>WINDOWS</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(IsLinux)' == 'true'">
+		<DefineConstants>LINUX</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- Windows -->
 		
