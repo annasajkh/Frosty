@@ -21,9 +21,9 @@ public class BrittleIce : TileObject
 
     public BrittleIce(Vector2 position, Vector2 scale, Texture texture, Rect rect) : base(position, scale, texture, rect)
     {
-        breakingSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_0.ogg"), volume: 200),
-                          SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_1.ogg"), volume: 200),
-                          SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_2.ogg"), volume: 200)];
+        breakingSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_0.ogg"), volume: 50),
+                          SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_1.ogg"), volume: 50),
+                          SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_2.ogg"), volume: 50)];
 
         breakingTimer = new Timer(0.25f, true);
         breakingTimer.OnTimeout += () =>

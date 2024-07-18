@@ -59,13 +59,13 @@ public class Player : Entity
             shouldPlayWalkSound = true;
         };
 
-        playerWalkOnSnowSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_0.ogg"), volume: 100),
-                                  SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_1.ogg"), volume: 100),
-                                  SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_2.ogg"), volume: 100)];
+        playerWalkOnSnowSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_0.ogg"), volume: 50),
+                                  SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_1.ogg"), volume: 50),
+                                  SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_2.ogg"), volume: 50)];
 
-        playerWalkOnIceSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_0.ogg"), volume: 255),
-                                 SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_1.ogg"), volume: 255),
-                                 SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg"), volume: 255)];
+        playerWalkOnIceSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_0.ogg"), volume: 100),
+                                 SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_1.ogg"), volume: 100),
+                                 SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg"), volume: 100)];
 
         playerJump = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_jump.ogg"), volume: 100);
         playerDied = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_died.ogg"), volume: 255);
