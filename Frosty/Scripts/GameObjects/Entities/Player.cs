@@ -68,7 +68,7 @@ public class Player : Entity
                                  SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg"), volume: 100)];
 
         playerJump = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_jump.ogg"), volume: 100);
-        playerDied = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_died.ogg"), volume: 255);
+        playerDied = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_died.ogg"), volume: 100);
 
         AnimationManager.AddAnimation("player_idle_left", new Animation(playerIdleLeft, playerIdleLeft.Width, playerIdleLeft.Height, 0.5f, true));
         AnimationManager.AddAnimation("player_idle_right", new Animation(playerIdleRight, playerIdleRight.Width, playerIdleRight.Height, 0.5f, true));
