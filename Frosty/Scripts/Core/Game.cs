@@ -44,7 +44,7 @@ public sealed class Game : Module
         SceneManager.AddScene("LevelK", new LevelK());
 
 #if DEBUG
-        SceneManager.ChangeScene("LevelK");
+        SceneManager.ChangeScene("LevelB");
 #endif
     }
 
