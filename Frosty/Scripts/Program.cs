@@ -18,7 +18,7 @@ internal static class Program
 #if DEBUG
         App.Resizable = true;
 #else
-        App.Resizable = true;
+        App.Resizable = false;
 #endif
         App.Register<Game>();
 
