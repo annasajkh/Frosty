@@ -38,7 +38,7 @@ public class Level : Scene
     bool playerAtFinishLineOnce = false;
     bool changeSceneRunOnce;
 
-    public float transitionOpacity;
+    public float transitionOpacity = 1;
 
     Timer playerDyingTimer;
     Timer playerWalkSoundEnableTimer;
@@ -53,8 +53,7 @@ public class Level : Scene
     {
         nextLevelType = NextLevelType.Right;
         dialogBox = new DialogBox(new Vector2(App.Width / 2, 21 * Game.Scale + 5), 10);
-        transitionOpacity = 1;
-        filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
+         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
 
         levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Graphics", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 8), new TileCollection(["Assets", "Graphics", "Tilesets", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]), this);
 
@@ -109,20 +108,13 @@ public class Level : Scene
     public void SaveLevel()
     {
         levelEditor.Save(Path.Combine("Assets", "Levels", $"{GetType().Name}.json"));
-
-        try
-        {
-            levelEditor.Save(Path.Combine("..", "..", "..", "Assets", "Levels", $"{GetType().Name}.json"));
-        }
-        finally
-        {
-            // Ignore the fucking error
-        }
+        levelEditor.Save(Path.Combine("..", "..", "..", "Assets", "Levels", $"{GetType().Name}.json"));
     }
 #endif
 
     public override void Update()
     {
+
 #if DEBUG
         if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Pressed(Keys.S))
         {
@@ -164,8 +156,6 @@ public class Level : Scene
                         playerAtFinishLine?.Invoke();
                         playerAtFinishLineOnce = true;
                     }
-                    break;
-                default:
                     break;
             }
 
