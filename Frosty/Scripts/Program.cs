@@ -10,7 +10,8 @@ internal static class Program
     {
         if (SDL.SDL_Init(SDL.SDL_INIT_AUDIO) < 0)
         {
-            throw new Exception("Cannot initialize SDL Audio");
+            string errorMessage = SDL.SDL_GetError();
+            throw new Exception($"Cannot initialize SDL Audio: {errorMessage}");
         }
 
         SDL_mixer.Mix_OpenAudio(frequency: 44100, format: SDL.AUDIO_S16SYS, channels: 2, chunksize: 2048);

@@ -1,6 +1,6 @@
 ﻿namespace Frosty.Scripts.Scenes.Levels;
 
-public class LevelL
+public class LevelL : Level
 {
 
 }

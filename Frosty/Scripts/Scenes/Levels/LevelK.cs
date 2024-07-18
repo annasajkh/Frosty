@@ -11,5 +11,10 @@ public class LevelK : Level
         player.position = new Vector2(30, 450);
 
         nextLevelType = NextLevelType.Top;
+        
+        playerAtFinishLine += () =>
+        {
+            GoToNextLevel("LevelL");
+        };
     }
 }
