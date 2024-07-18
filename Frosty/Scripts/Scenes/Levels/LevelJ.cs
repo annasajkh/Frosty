@@ -8,6 +8,11 @@ public class LevelJ : Level
     {
         base.Startup();
 
-        player.position = new Vector2(30, 450);
+        player.position = new Vector2(30, 250);
+
+        playerAtFinishLine += () =>
+        {
+            GoToNextLevel("LevelK");
+        };
     }
 }

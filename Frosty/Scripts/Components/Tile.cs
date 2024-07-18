@@ -8,8 +8,8 @@ public enum TileType
     Solid,
     Spike,
     Ice,
+    Decoration,
     BrittleIce,
-    Decoration
 }
 
 [Serializable]

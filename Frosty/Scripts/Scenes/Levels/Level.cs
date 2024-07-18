@@ -13,6 +13,13 @@ namespace Frosty.Scripts.Scenes.Levels;
 
 public class Level : Scene
 {
+    protected enum NextLevelType
+    {
+        Right,
+        Top,
+        Bottom
+    }
+
     public bool Paused { get; private set; } = false;
 
     protected LevelEditor levelEditor;
@@ -40,8 +47,11 @@ public class Level : Scene
 
     protected DialogBox dialogBox;
 
+    protected NextLevelType nextLevelType;
+
     public override void Startup()
     {
+        nextLevelType = NextLevelType.Right;
         dialogBox = new DialogBox(new Vector2(App.Width / 2, 21 * Game.Scale + 5), 10);
         transitionOpacity = 1;
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
@@ -113,6 +123,12 @@ public class Level : Scene
 
     public override void Update()
     {
+#if DEBUG
+        if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Pressed(Keys.S))
+        {
+            SaveLevel();
+        }
+#endif
         if (Input.Keyboard.Pressed(Keys.P))
         {
             Paused = !Paused;
@@ -124,10 +140,33 @@ public class Level : Scene
         {
             playerWalkSoundEnableTimer.Update();
 
-            if (player.position.X > 1000 && !playerAtFinishLineOnce)
+            switch (nextLevelType)
             {
-                playerAtFinishLine?.Invoke();
-                playerAtFinishLineOnce = true;
+                case NextLevelType.Right:
+                    
+                    if (player.position.X > 1000 && !playerAtFinishLineOnce)
+                    {
+                        playerAtFinishLine?.Invoke();
+                        playerAtFinishLineOnce = true;
+                    }
+
+                    break;
+                case NextLevelType.Top:
+                    if (player.position.X < -100 && !playerAtFinishLineOnce)
+                    {
+                        playerAtFinishLine?.Invoke();
+                        playerAtFinishLineOnce = true;
+                    }
+                    break;
+                case NextLevelType.Bottom:
+                    if (player.position.X > App.Height && !playerAtFinishLineOnce)
+                    {
+                        playerAtFinishLine?.Invoke();
+                        playerAtFinishLineOnce = true;
+                    }
+                    break;
+                default:
+                    break;
             }
 
             dialogBox.Update();
@@ -137,6 +176,7 @@ public class Level : Scene
             {
                 Game.SceneManager.ChangeScene("MainMenu");
             }
+
             player.Update();
 
 
@@ -182,13 +222,7 @@ public class Level : Scene
                 player.position.X = player.size.X * Game.Scale / 2;
             }
 
-            if (player.position.Y < player.size.Y * Game.Scale / 2)
-            {
-                player.position.Y = player.size.Y * Game.Scale / 2;
-                player.velocity.Y = 0;
-            }
-
-            if (player.position.Y > App.Height)
+            if (player.position.Y > App.Height && nextLevelType != NextLevelType.Bottom)
             {
                 player.Die = true;
             }

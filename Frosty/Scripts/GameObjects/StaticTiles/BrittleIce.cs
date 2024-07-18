@@ -25,7 +25,7 @@ public class BrittleIce : TileObject
                           SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_1.ogg"), volume: 200),
                           SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_2.ogg"), volume: 200)];
 
-        breakingTimer = new Timer(0.5f, true);
+        breakingTimer = new Timer(0.25f, true);
         breakingTimer.OnTimeout += () =>
         {
             Game.SoundEffectPlayer.SetSource(breakingSounds[Game.Random.Next() % breakingSounds.Length]);

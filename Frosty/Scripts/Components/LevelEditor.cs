@@ -313,7 +313,6 @@ public class LevelEditor
 
         batcher.PushMatrix(Helper.SnapToGrid(Input.Mouse.Position, (int)(Game.TileSize * Game.Scale)) + new Vector2(Game.TileSize * Game.Scale) / 2, Vector2.One * Game.Scale, Vector2.One * Game.TileSize / 2, 0);
 
-
         if (!Level.Paused)
         {
             switch (EditingMode)

@@ -1,19 +1,20 @@
-﻿namespace Frosty.Scripts.Components;
+﻿using System.Text.Json.Serialization;
+
+namespace Frosty.Scripts.Components;
 
 [Serializable]
 public struct LevelEditorSaveData
 {
-    public string[] asepritePath;
-    public string[] collectionAsepritePath;
+    public string[] asepritePath { get; set; }
+    public string[] collectionAsepritePath { get; set; }
+    public int tileWidth { get; set; }
+    public int tileHeight { get; set; }
+    public int totalRow { get; set; }
+    public int totalColumn { get; set; }
+    public List<Tile> tiles { get; set; }
+    public List<Tile> tileCollection { get; set; }
 
-    public int tileWidth;
-    public int tileHeight;
-    public int totalRow;
-    public int totalColumn;
-
-    public List<Tile> tiles;
-    public List<Tile> tileCollection;
-
+    [JsonConstructor]
     public LevelEditorSaveData(string[] asepritePath, string[] collectionAsepritePath, int tileWidth, int tileHeight, int totalRow, int totalColumn, List<Tile> tiles, List<Tile> tileCollection)
     {
         this.asepritePath = asepritePath;
