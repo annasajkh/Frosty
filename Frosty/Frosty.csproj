@@ -49,12 +49,12 @@
 		
 		<!-- Linux -->
 
-		<Content Include="Libraries/SDL2/Linux_x86_64/SDL2.so" Condition="'$(IsLinux)' == 'true'">
+		<Content Include="Libraries/SDL2/Linux_x86_64/libSDL2.so" Condition="'$(IsLinux)' == 'true'">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Link>libSDL2.so</Link>
 		</Content>
 		
-		<Content Include="Libraries/SDL2/Linux_x86_64/SDL2_mixer.so" Condition="'$(IsLinux)' == 'true'">
+		<Content Include="Libraries/SDL2/Linux_x86_64/libSDL2_mixer.so" Condition="'$(IsLinux)' == 'true'">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Link>libSDL2_mixer.so</Link>
 		</Content>
