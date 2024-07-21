@@ -2,6 +2,7 @@
 using Frosty.Scripts.Core;
 using Frosty.Scripts.GameObjects;
 using Frosty.Scripts.GameObjects.Effects;
+using Frosty.Scripts.UIs;
 using Frosty.Scripts.Utils;
 using System.Numerics;
 
@@ -9,9 +10,10 @@ namespace Frosty.Scripts.Scenes.Levels;
 
 public class LevelR : Level
 {
-    bool showEndUI;
+    bool endUI;
     House house;
     HouseChimneySmokeSpawner houseChimneySmokeSpawner;
+    Button mainMenuButton;
 
     public override void Startup()
     {
@@ -36,13 +38,20 @@ public class LevelR : Level
         fadeOutTransitionFinished += () =>
         {
             player.walkRight = false;
-            showEndUI = true;
+            endUI = true;
         };
 
 
         player.position = new Vector2(30, 450);
         house = new House(new Vector2(650, 306), 0);
         houseChimneySmokeSpawner = new HouseChimneySmokeSpawner(new Vector2(312, 150), 0.1f, 30);
+        mainMenuButton = new Button("Main Menu", Color.White, Color.DarkGray, Color.LightGray, new Vector2(App.Width / 2, App.Height / 4 * 3), new Vector2(140, 50));
+
+        mainMenuButton.OnPressed += () =>
+        {
+            File.Delete("Save.json");
+            Game.SceneManager.ChangeScene("MainMenu");
+        };
     }
 
     public override void Update()
@@ -51,6 +60,11 @@ public class LevelR : Level
 
         house.Update();
         houseChimneySmokeSpawner.Update();
+
+        if (endUI)
+        {
+            mainMenuButton.Update();
+        }
     }
 
     public override void DrawHouse(Batcher batcher)
@@ -63,10 +77,12 @@ public class LevelR : Level
     {
         base.Render(batcher);
 
-        if (showEndUI)
+        if (endUI)
         {
             Helper.DrawTextCentered($"Game Run Time: {TimeSpan.FromSeconds(Game.GameRunTime).ToString(@"hh\:mm\:ss")}", new Vector2(App.Width / 2, App.Height / 4), Color.White, Game.M5x7Menu, batcher);
             Helper.DrawTextCentered($"Deaths: {Game.PlayerDeath}", new Vector2(App.Width / 2, App.Height / 4 * 2), Color.White, Game.M5x7Menu, batcher);
+
+            mainMenuButton.Draw(batcher);
         }
     }
 

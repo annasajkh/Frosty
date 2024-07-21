@@ -8,6 +8,7 @@ namespace Frosty.Scripts.Core;
 
 public sealed class Game : Module
 {
+    public static string? PlayerLevel { get; set; }
     public static int PlayerDeath { get; set; }
     public static double GameRunTime { get; set; }
 

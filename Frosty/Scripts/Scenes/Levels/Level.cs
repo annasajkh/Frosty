@@ -8,6 +8,7 @@ using Frosty.Scripts.GameObjects;
 using Frosty.Scripts.GameObjects.Effects;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.GameObjects.StaticTiles;
+using Newtonsoft.Json;
 
 namespace Frosty.Scripts.Scenes.Levels;
 
@@ -51,8 +52,26 @@ public abstract class Level : Scene
 
     List<BrittleIceBreakSpawner> brittleIceBreakSpawners = new();
 
+    Timer saveTimer;
+
     public override void Startup()
     {
+        Game.PlayerLevel = GetType().Name;
+
+        string jsonSaveData = JsonConvert.SerializeObject(new SaveData(Game.PlayerDeath, Game.GameRunTime, Game.PlayerLevel), Formatting.Indented);
+        File.WriteAllText("Save.json", jsonSaveData);
+
+        saveTimer = new Timer(3, false);
+        
+        saveTimer.OnTimeout += () =>
+        {
+            string jsonSaveData = JsonConvert.SerializeObject(new SaveData(Game.PlayerDeath, Game.GameRunTime, Game.PlayerLevel), Formatting.Indented);
+            File.WriteAllText("Save.json", jsonSaveData);
+        };
+
+        saveTimer.Start();
+
+
         nextLevelType = NextLevelType.Right;
         dialogBox = new DialogBox(new Vector2(App.Width / 2, 21 * Game.Scale + 5), 10);
         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
@@ -121,6 +140,8 @@ public abstract class Level : Scene
 
     public override void Update()
     {
+        saveTimer.Update();
+
 #if DEBUG
         if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Pressed(Keys.S))
         {

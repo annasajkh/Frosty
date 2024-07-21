@@ -1,7 +1,9 @@
 ﻿using Foster.Framework;
+using Frosty.Scripts.Components;
 using Frosty.Scripts.Core;
 using Frosty.Scripts.GameObjects.Effects;
 using Frosty.Scripts.Utils;
+using Newtonsoft.Json;
 using System.Numerics;
 
 namespace Frosty.Scripts.Scenes;
@@ -13,6 +15,15 @@ public class MainMenu : Scene
 
     public override void Startup()
     {
+        if (File.Exists("Save.json"))
+        {
+            SaveData saveData = JsonConvert.DeserializeObject<SaveData>(File.ReadAllText("Save.json"));
+
+            Game.PlayerLevel = saveData.level;
+            Game.PlayerDeath = saveData.playerDeath;
+            Game.GameRunTime = saveData.gameRunTime;
+        }
+
         snowSpawner = new SnowSpawner(new Vector2(0, 0), 0.005f, App.Width);
     }
 
@@ -20,7 +31,15 @@ public class MainMenu : Scene
     {
         if (Input.Keyboard.Pressed(Keys.Enter))
         {
-            Game.SceneManager.ChangeScene("IntroLevel");
+            if (Game.PlayerLevel is not null)
+            {
+                Game.SceneManager.ChangeScene(Game.PlayerLevel);
+            }
+            else
+            {
+                Game.SceneManager.ChangeScene("IntroLevel");
+            }
+
         }
 
         snowSpawner.Update();
