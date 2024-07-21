@@ -23,6 +23,12 @@ public class MainMenu : Scene
             Game.PlayerDeath = saveData.playerDeath;
             Game.GameRunTime = saveData.gameRunTime;
         }
+        else
+        {
+            Game.PlayerLevel = "IntroLevel";
+            Game.PlayerDeath = 0;
+            Game.GameRunTime = 0;
+        }
 
         snowSpawner = new SnowSpawner(new Vector2(0, 0), 0.005f, App.Width);
     }

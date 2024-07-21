@@ -12,7 +12,6 @@ public class DialogBox : GameObject
 
     float CharPerSeconds { get; set; }
 
-    Texture dialogBoxTexture;
 
     Timer speakDelayTimer;
 
@@ -29,7 +28,6 @@ public class DialogBox : GameObject
 
     public DialogBox(Vector2 position, float charPerSeconds) : base(position, 0, Vector2.One * Game.Scale, new Vector2(180, 42))
     {
-        dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "Graphics", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
         CharPerSeconds = charPerSeconds;
 
         speakDelayTimer = new Timer(0, false);
@@ -37,8 +35,7 @@ public class DialogBox : GameObject
         {
             if (sentenceIndex < CurrentSentence.Length)
             {
-                Game.SoundEffectPlayer.SetSource(Game.PlayerTalk);
-                Game.SoundEffectPlayer.Play();
+                Game.PlayerTalk.Play();
 
                 sentenceSpeak += CurrentSentence[sentenceIndex];
             }
@@ -103,21 +100,21 @@ public class DialogBox : GameObject
         if (!hide)
         {
             batcher.PushMatrix(position, scale, size / 2, rotation);
-            batcher.Image(dialogBoxTexture, Color.White);
+            batcher.Image(Game.dialogBoxTexture, Color.White);
             batcher.PopMatrix();
 
-            batcher.Text(Game.M5x7Dialog, sentenceSpeak, position - new Vector2(dialogBoxTexture.Width * Game.Scale / 2 - 25, dialogBoxTexture.Height * Game.Scale / 2 - 15), Color.White);
+            batcher.Text(Game.M5x7Dialog, sentenceSpeak, position - new Vector2(Game.dialogBoxTexture.Width * Game.Scale / 2 - 25, Game.dialogBoxTexture.Height * Game.Scale / 2 - 15), Color.White);
 
             if (isNextSentence)
             {
-                batcher.Triangle(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
-                                 new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
-                                 new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                batcher.Triangle(new Vector2(position.X - 15, position.Y + Game.dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                 new Vector2(position.X + 15, position.Y + Game.dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                 new Vector2(position.X, position.Y + 15 + Game.dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
                                  Color.White);
 
-                batcher.TriangleLine(new Vector2(position.X - 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
-                                     new Vector2(position.X + 15, position.Y + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
-                                     new Vector2(position.X, position.Y + 15 + dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                batcher.TriangleLine(new Vector2(position.X - 15, position.Y + Game.dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                     new Vector2(position.X + 15, position.Y + Game.dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
+                                     new Vector2(position.X, position.Y + 15 + Game.dialogBoxTexture.Height * Game.Scale / 2 - 10 + upAndDownArrow),
                                      1,
                                      Color.Black);
             }
@@ -128,9 +125,6 @@ public class DialogBox : GameObject
 
     public override void Dispose()
     {
-        if (!dialogBoxTexture.IsDisposed)
-        {
-            dialogBoxTexture.Dispose();
-        }
+
     }
 }

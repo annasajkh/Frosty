@@ -1,8 +1,8 @@
 ﻿using Foster.Framework;
 using Frosty.Scripts.Components;
-using Frosty.Scripts.Components.Audio;
 using Frosty.Scripts.Scenes;
 using Frosty.Scripts.Scenes.Levels;
+using SFML.Audio;
 
 namespace Frosty.Scripts.Core;
 
@@ -27,13 +27,46 @@ public sealed class Game : Module
     public static float gravity = 20;
     public static Random Random { get; } = new(Time.Now.Milliseconds);
     public static SceneManager SceneManager { get; private set; } = new(initialSceneName: "MainMenu", initialScene: new MainMenu());
-    public static SoundEffectPlayer SoundEffectPlayer { get; private set; } = new SoundEffectPlayer();
-    public static SoundEffect PlayerTalk { get; } = SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_talk.ogg"), volume: 20);
+    public static Sound PlayerTalk { get; } = new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_talk.ogg")));
+
+    public static Texture dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "Graphics", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
+
+    public static Texture houseTexture = new Texture(new Aseprite(Path.Combine("Assets", "Graphics", "Buildings", "house.ase")).Frames[0].Cels[0].Image);
+
+    public static Sound[] playerWalkOnSnowSounds;
+    public static Sound[] playerWalkOnIceSounds;
+    public static Sound playerJump;
+    public static Sound playerDied;
+    public static Sound[] breakingSounds;
+
+    public static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_idle_left.ase"));
+    public static Aseprite playerIdleRight = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_idle_right.ase"));
+
+    public static Aseprite playerWalkRight = playerWalkRight = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_walk_right.ase"));
+    public static Aseprite playerWalkLeft = playerWalkLeft = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_walk_left.ase"));
 
     Batcher batcher = new();
 
     public override void Startup()
     {
+        PlayerTalk.Volume = 20;
+
+        playerWalkOnSnowSounds = [new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_0.ogg"))),
+                                  new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_1.ogg"))),
+                                  new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Snow Steps", "snow_step_2.ogg")))];
+
+        playerWalkOnIceSounds = [new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_0.ogg"))),
+                                 new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_1.ogg"))),
+                                 new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg")))];
+
+        playerJump = new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_jump.ogg")));
+        playerDied = new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_died.ogg")));
+
+        breakingSounds = [new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_0.ogg"))),
+                          new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_1.ogg"))),
+                          new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_2.ogg")))];
+
+
         SceneManager.AddScene("IntroLevel", new IntroLevel());
         SceneManager.AddScene("LevelA", new LevelA());
         SceneManager.AddScene("LevelB", new LevelB());
