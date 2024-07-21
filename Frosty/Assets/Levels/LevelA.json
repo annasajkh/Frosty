@@ -1,16 +1,16 @@
 {
-    "asepritePath": [
-        "Assets",
-        "Graphics",
-        "Tilesets",
-        "tileset.ase"
-      ],
-      "collectionAsepritePath": [
-        "Assets",
-        "Graphics",
-        "Tilesets",
-        "decoration.ase"
-      ],
+  "asepritePath": [
+    "Assets",
+    "Graphics",
+    "Tilesets",
+    "tileset.ase"
+  ],
+  "collectionAsepritePath": [
+    "Assets",
+    "Graphics",
+    "Tilesets",
+    "decoration.ase"
+  ],
   "tileWidth": 16,
   "tileHeight": 16,
   "totalRow": 8,
@@ -1178,24 +1178,5 @@
       "rectHeight": 16
     }
   ],
-  "tileCollection": [
-    {
-      "tileType": 3,
-      "x": 648,
-      "y": 360,
-      "rectX": 48,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    },
-    {
-      "tileType": 3,
-      "x": 216,
-      "y": 360,
-      "rectX": 48,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    }
-  ]
+  "tileCollection": []
 }

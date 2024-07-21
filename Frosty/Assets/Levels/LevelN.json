@@ -791,24 +791,5 @@
       "rectHeight": 16
     }
   ],
-  "tileCollection": [
-    {
-      "tileType": 3,
-      "x": 456,
-      "y": 264,
-      "rectX": 0,
-      "rectY": 0,
-      "rectWidth": 36,
-      "rectHeight": 64
-    },
-    {
-      "tileType": 3,
-      "x": 264,
-      "y": 168,
-      "rectX": 48,
-      "rectY": 0,
-      "rectWidth": 16,
-      "rectHeight": 16
-    }
-  ]
+  "tileCollection": []
 }

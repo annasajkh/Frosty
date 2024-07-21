@@ -23,7 +23,7 @@ public class BrittleIce : TileObject
         breakingTimer = new Timer(0.25f, true);
         breakingTimer.OnTimeout += () =>
         {
-            Game.breakingSounds[Game.Random.Next() % Game.breakingSounds.Length].Play();
+            Game.iceBreakingSounds[Game.Random.Next() % Game.iceBreakingSounds.Length].Play();
             Break = true;
         };
 

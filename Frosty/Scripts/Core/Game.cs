@@ -37,7 +37,7 @@ public sealed class Game : Module
     public static Sound[] playerWalkOnIceSounds;
     public static Sound playerJump;
     public static Sound playerDied;
-    public static Sound[] breakingSounds;
+    public static Sound[] iceBreakingSounds;
 
     public static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_idle_left.ase"));
     public static Aseprite playerIdleRight = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_idle_right.ase"));
@@ -60,12 +60,27 @@ public sealed class Game : Module
                                  new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Steps", "ice_step_2.ogg")))];
 
         playerJump = new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_jump.ogg")));
+        playerJump.Volume = 50;
         playerDied = new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Player", "player_died.ogg")));
 
-        breakingSounds = [new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_0.ogg"))),
-                          new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_1.ogg"))),
-                          new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_2.ogg")))];
+        iceBreakingSounds = [new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_0.ogg"))),
+                             new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_1.ogg"))),
+                             new Sound(new SoundBuffer(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_2.ogg")))];
 
+        foreach (var breakingSound in iceBreakingSounds)
+        {
+            breakingSound.Volume = 50;
+        }
+
+        foreach (var playerWalkOnSnowSound in playerWalkOnSnowSounds)
+        {
+            playerWalkOnSnowSound.Volume = 50;
+        }
+
+        foreach (var playerWalkOnIceSound in playerWalkOnIceSounds)
+        {
+            playerWalkOnIceSound.Volume = 100;
+        }
 
         SceneManager.AddScene("IntroLevel", new IntroLevel());
         SceneManager.AddScene("LevelA", new LevelA());
@@ -88,7 +103,7 @@ public sealed class Game : Module
         SceneManager.AddScene("LevelR", new LevelR());
 
 #if DEBUG
-        //SceneManager.ChangeScene("LevelR");
+        SceneManager.ChangeScene("IntroLevel");
 #endif
     }
 
