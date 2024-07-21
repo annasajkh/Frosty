@@ -12,7 +12,7 @@ public sealed class Game : Module
     public static double GameRunTime { get; set; }
 
     public static float entityFriction = 0.3f;
-    public static float entityOnIceFriction = 0.05f;
+    public static float entityOnIceFriction = 0.1f;
     public static float Scale { get; } = 3;
     public static int TileSize { get; } = 16;
 
