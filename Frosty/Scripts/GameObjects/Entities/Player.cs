@@ -37,7 +37,7 @@ public class Player : Entity
     {
         get
         {
-            return new Rect(position - scale * size / 2 + new Vector2(10f, 0), position + scale * size / 2 - new Vector2(10f, 0));
+            return new Rect(position - scale * size / 2 + new Vector2(10f, 10), position + scale * size / 2 - new Vector2(10f, 0));
         }
     }
 
