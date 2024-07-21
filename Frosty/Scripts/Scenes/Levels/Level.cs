@@ -11,7 +11,7 @@ using Frosty.Scripts.GameObjects.StaticTiles;
 
 namespace Frosty.Scripts.Scenes.Levels;
 
-public class Level : Scene
+public abstract class Level : Scene
 {
     protected enum NextLevelType
     {
@@ -20,22 +20,23 @@ public class Level : Scene
         Bottom
     }
 
-    public bool Paused { get; private set; } = false;
+    public bool Paused { get; private set; }
 
     protected LevelEditor levelEditor;
 
     protected Player player;
-    protected Snowing snowing;
+    protected SnowSpawner snowSpawner;
     protected float transitionSpeed = 1;
-    protected bool fadeOut = false;
+    protected bool fadeOut;
+    protected bool stopGameRuntime;
 
     protected event Action? fadeInTransitionFinished;
     protected event Action? fadeOutTransitionFinished;
     protected event Action? playerAtFinishLine;
 
-    bool fadeInTransitionFinishedOnce = false;
-    bool fadeOutTransitionFinishedOnce = false;
-    bool playerAtFinishLineOnce = false;
+    bool fadeInTransitionFinishedOnce;
+    bool fadeOutTransitionFinishedOnce;
+    bool playerAtFinishLineOnce;
     bool changeSceneRunOnce;
 
     public float transitionOpacity = 1;
@@ -46,14 +47,15 @@ public class Level : Scene
     string filePath;
 
     protected DialogBox dialogBox;
-
     protected NextLevelType nextLevelType;
+
+    List<BrittleIceBreakSpawner> brittleIceBreakSpawners = new();
 
     public override void Startup()
     {
         nextLevelType = NextLevelType.Right;
         dialogBox = new DialogBox(new Vector2(App.Width / 2, 21 * Game.Scale + 5), 10);
-         filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
+        filePath = Path.Combine("Assets", "Levels", $"{GetType().Name}.json");
 
         levelEditor = new LevelEditor(true, EditingMode.TileSet, new TileMap(["Assets", "Graphics", "Tilesets", "tileset.ase"], Game.TileSize, Game.TileSize, 8, 8), new TileCollection(["Assets", "Graphics", "Tilesets", "decoration.ase"], [new Tile(Vector2.Zero, new Rect(0, 0, 36, 64), TileType.Decoration), new Tile(new Vector2(48, 0), new Rect(48, 0, 16, 16), TileType.Decoration)]), this);
 
@@ -63,7 +65,7 @@ public class Level : Scene
         levelEditor.Editing = false;
 #endif
 
-        snowing = new Snowing(new Vector2(0, 0), 0.005f, App.Width);
+        snowSpawner = new SnowSpawner(new Vector2(0, 0), 0.005f, App.Width);
         player = new Player(new Vector2(100, 100));
         player.muteFootStep = true;
 
@@ -82,16 +84,21 @@ public class Level : Scene
         playerDyingTimer = new Timer(1, true);
         playerDyingTimer.OnTimeout += () =>
         {
+            Game.PlayerDeath++;
+            levelEditor.Dispose();
+            player.Dispose();
+            dialogBox.Dispose();
+            GC.Collect();
+
             Startup();
             player.Die = false;
         };
-
     }
 
     public void GoToNextLevel(string name)
     {
         fadeOut = true;
-        player.freeze = true;
+        player.noUpdate = true;
 
         fadeOutTransitionFinished += () =>
         {
@@ -114,13 +121,18 @@ public class Level : Scene
 
     public override void Update()
     {
-
 #if DEBUG
         if (Input.Keyboard.Down(Keys.LeftControl) && Input.Keyboard.Pressed(Keys.S))
         {
             SaveLevel();
         }
 #endif
+
+        if (!stopGameRuntime)
+        {
+            Game.GameRunTime += Time.Delta;
+        }
+
         if (Input.Keyboard.Pressed(Keys.P))
         {
             Paused = !Paused;
@@ -130,35 +142,25 @@ public class Level : Scene
 
         if (!Paused)
         {
-            playerWalkSoundEnableTimer.Update();
-
-            switch (nextLevelType)
+            if (fadeOut)
             {
-                case NextLevelType.Right:
-                    
-                    if (player.position.X > 1000 && !playerAtFinishLineOnce)
+                if (transitionOpacity < 0.9999)
+                {
+                    fadeOutTransitionFinishedOnce = false;
+                    transitionOpacity += Time.Delta * transitionSpeed;
+                }
+                else
+                {
+                    if (!fadeOutTransitionFinishedOnce)
                     {
-                        playerAtFinishLine?.Invoke();
-                        playerAtFinishLineOnce = true;
+                        fadeOutTransitionFinished?.Invoke();
+                        fadeOutTransitionFinishedOnce = true;
                     }
-
-                    break;
-                case NextLevelType.Top:
-                    if (player.position.X < -100 && !playerAtFinishLineOnce)
-                    {
-                        playerAtFinishLine?.Invoke();
-                        playerAtFinishLineOnce = true;
-                    }
-                    break;
-                case NextLevelType.Bottom:
-                    if (player.position.X > App.Height && !playerAtFinishLineOnce)
-                    {
-                        playerAtFinishLine?.Invoke();
-                        playerAtFinishLineOnce = true;
-                    }
-                    break;
+                    transitionOpacity = 1;
+                }
             }
 
+            playerWalkSoundEnableTimer.Update();
             dialogBox.Update();
             playerDyingTimer.Update();
 
@@ -169,14 +171,30 @@ public class Level : Scene
 
             player.Update();
 
-
-            foreach (var tileObject in levelEditor.Tiles.Reverse())
+            if (player.Die)
             {
-                tileObject.Value.Update();
+                if (transitionOpacity < 0.9999)
+                {
+                    fadeOutTransitionFinishedOnce = false;
+                    transitionOpacity += Time.Delta * transitionSpeed;
+                }
+                else
+                {
+                    if (!fadeOutTransitionFinishedOnce)
+                    {
+                        fadeOutTransitionFinished?.Invoke();
+                        fadeOutTransitionFinishedOnce = true;
+                    }
+                    transitionOpacity = 1;
+                }
+
+                playerDyingTimer.Start();
             }
 
             foreach (var tileObject in levelEditor.Tiles.Reverse())
             {
+                tileObject.Value.Update();
+
                 if (Helper.IsOverlapOnGround(player.BoundingBox, tileObject.Value.BoundingBox))
                 {
                     if (!player.playSoundWalkOnce)
@@ -198,13 +216,56 @@ public class Level : Scene
                         player.shouldPlayWalkSound = false;
                     }
                 }
+            }
 
+            foreach (var tileObject in levelEditor.Tiles.Reverse())
+            {
                 tileObject.Value.ResolveCollision(player);
 
                 if (tileObject.Value is BrittleIce brittleIce && brittleIce.Break)
                 {
                     levelEditor.Tiles.Remove(tileObject.Key);
+                    brittleIceBreakSpawners.Add(new BrittleIceBreakSpawner(brittleIce.position / 2, new Vector2(48, 48)));
                 }
+            }
+
+            foreach (var brittleIceBreakSpawner in brittleIceBreakSpawners)
+            {
+                brittleIceBreakSpawner.Update();
+            }
+
+            for (int i = brittleIceBreakSpawners.Count - 1; i >= 0; i--)
+            {
+                if (brittleIceBreakSpawners[i].Deleted)
+                {
+                    brittleIceBreakSpawners.RemoveAt(i);
+                }
+            }
+
+            switch (nextLevelType)
+            {
+                case NextLevelType.Right:
+                    if (player.position.X > 1000 && !playerAtFinishLineOnce)
+                    {
+                        playerAtFinishLine?.Invoke();
+                        playerAtFinishLineOnce = true;
+                    }
+
+                    break;
+                case NextLevelType.Top:
+                    if (player.position.Y < -player.size.Y * Game.Scale * 0.5 && !playerAtFinishLineOnce)
+                    {
+                        playerAtFinishLine?.Invoke();
+                        playerAtFinishLineOnce = true;
+                    }
+                    break;
+                case NextLevelType.Bottom:
+                    if (player.position.Y > App.Height + player.size.Y * Game.Scale / 2 && player.position.X > App.Width / 2 && !playerAtFinishLineOnce)
+                    {
+                        playerAtFinishLine?.Invoke();
+                        playerAtFinishLineOnce = true;
+                    }
+                    break;
             }
 
             if (player.position.X < player.size.X * Game.Scale / 2)
@@ -217,47 +278,15 @@ public class Level : Scene
                 player.Die = true;
             }
 
-            if (fadeOut)
-            {
-                if (transitionOpacity < 0.9)
-                {
-                    fadeOutTransitionFinishedOnce = false;
-                    transitionOpacity += Time.Delta * transitionSpeed;
-                }
-                else
-                {
-                    if (!fadeOutTransitionFinishedOnce)
-                    {
-                        fadeOutTransitionFinished?.Invoke();
-                        fadeOutTransitionFinishedOnce = true;
-                    }
-                    transitionOpacity = 1;
-                }
-            }
-
-            if (player.Die)
-            {
-                if (transitionOpacity < 0.9)
-                {
-                    fadeOutTransitionFinishedOnce = false;
-                    transitionOpacity += Time.Delta * transitionSpeed;
-                }
-                else
-                {
-                    if (!fadeOutTransitionFinishedOnce)
-                    {
-                        fadeOutTransitionFinished?.Invoke();
-                        fadeOutTransitionFinishedOnce = true;
-                    }
-                    transitionOpacity = 1;
-                }
-
-                playerDyingTimer.Start();
-            }
-
-            snowing.Update();
+            snowSpawner.Update();
         }
     }
+
+    public virtual void DrawHouse(Batcher batcher)
+    {
+
+    }
+
 
     public override void Render(Batcher batcher)
     {
@@ -265,7 +294,9 @@ public class Level : Scene
 
         batcher.Image(Game.NightSky, Vector2.Zero, Color.White);
 
-        snowing.Draw(batcher);
+        snowSpawner.Draw(batcher);
+
+        DrawHouse(batcher);
 
         foreach (var tileObject in levelEditor.Tiles.Values)
         {
@@ -284,8 +315,12 @@ public class Level : Scene
         }
 
         player.Draw(batcher);
-
         levelEditor.Draw(batcher);
+
+        foreach (var brittleIceBreakSpawner in brittleIceBreakSpawners)
+        {
+            brittleIceBreakSpawner.Draw(batcher);
+        }
 
         if (Paused)
         {
@@ -323,6 +358,8 @@ public class Level : Scene
 
     public override void Shutdown()
     {
-
+        levelEditor.Dispose();
+        player.Dispose();
+        dialogBox.Dispose();
     }
 }

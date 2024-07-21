@@ -4,23 +4,24 @@ using System.Numerics;
 
 namespace Frosty.Scripts.GameObjects.Effects;
 
-public class Snow : GameObject
+public class HouseChimneySmoke : GameObject
 {
-    public float FallingSpeed { get; }
     int opacity;
+    float velocityY;
+    float risingSpeed;
 
-    public Snow(Vector2 position, float size, float fallingSpeed) : base(position, 0, Vector2.One, Vector2.One * size)
+    public HouseChimneySmoke(Vector2 position, float size, float risingSpeed) : base(position, 0, Vector2.One, Vector2.One * size)
     {
-        FallingSpeed = fallingSpeed;
-
         rotation = Game.Random.NextSingle() * 360;
         opacity = Game.Random.Next() % 250 + 5;
+        this.risingSpeed = risingSpeed;
     }
 
     public override void Update()
     {
-        position += Vector2.UnitY * FallingSpeed * Time.Delta;
+        velocityY = -risingSpeed * Time.Delta;
         rotation += Time.Delta;
+        position += Vector2.UnitY * velocityY * Time.Delta;
     }
 
     public override void Draw(Batcher batcher)

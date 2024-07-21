@@ -10,11 +10,6 @@ public class LevelA : Level
 
         player.position = new Vector2(30, 335);
 
-        fadeInTransitionFinished += () =>
-        {
-
-        };
-
         playerAtFinishLine += () =>
         {
             GoToNextLevel("LevelB");

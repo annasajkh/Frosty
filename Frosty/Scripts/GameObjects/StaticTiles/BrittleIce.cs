@@ -19,6 +19,7 @@ public class BrittleIce : TileObject
     bool breakOnce;
     bool overlapGround;
 
+
     public BrittleIce(Vector2 position, Vector2 scale, Texture texture, Rect rect) : base(position, scale, texture, rect)
     {
         breakingSounds = [SoundEffect.Load(Path.Combine("Assets", "Audio", "Sound Effects", "Ice Breaking", "ice_breaking_0.ogg"), volume: 50),

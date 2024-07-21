@@ -8,7 +8,7 @@ namespace Frosty.Scripts.GameObjects;
 /// <summary>
 /// Anything that can exist in the world is a GameObject
 /// </summary>
-public abstract class GameObject : IDrawable, IUpdateable
+public abstract class GameObject : IDrawable, IUpdateable, IDisposable
 {
     public Vector2 position;
     public float rotation;
@@ -43,4 +43,6 @@ public abstract class GameObject : IDrawable, IUpdateable
             batcher.RectLine(BoundingBox, 1, Color.Green);
         }
     }
+
+    public abstract void Dispose();
 }

@@ -4,23 +4,23 @@ using System.Numerics;
 
 namespace Frosty.Scripts.GameObjects.Effects;
 
-public class Snow : GameObject
+public class BrittleIceBreak : GameObject
 {
-    public float FallingSpeed { get; }
     int opacity;
+    float velocityY;
+    float maxVelocityY = 300;
 
-    public Snow(Vector2 position, float size, float fallingSpeed) : base(position, 0, Vector2.One, Vector2.One * size)
+    public BrittleIceBreak(Vector2 position, float size) : base(position, 0, Vector2.One, Vector2.One * size)
     {
-        FallingSpeed = fallingSpeed;
-
         rotation = Game.Random.NextSingle() * 360;
         opacity = Game.Random.Next() % 250 + 5;
     }
 
     public override void Update()
     {
-        position += Vector2.UnitY * FallingSpeed * Time.Delta;
-        rotation += Time.Delta;
+        velocityY += Game.gravity;
+        velocityY = Math.Clamp(velocityY, -maxVelocityY, maxVelocityY);
+        position += Vector2.UnitY * velocityY * Time.Delta;
     }
 
     public override void Draw(Batcher batcher)

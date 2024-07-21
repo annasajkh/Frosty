@@ -5,7 +5,7 @@ using Timer = Frosty.Scripts.Components.Timer;
 
 namespace Frosty.Scripts.GameObjects.Effects;
 
-public class Snowing
+public class SnowSpawner
 {
     public Vector2 Position;
     public float SpawnInterval { get; } // in seconds
@@ -14,7 +14,7 @@ public class Snowing
 
     Timer timer;
 
-    public Snowing(Vector2 position, float interval, float wide)
+    public SnowSpawner(Vector2 position, float interval, float wide)
     {
         Position = position;
         Wide = wide;

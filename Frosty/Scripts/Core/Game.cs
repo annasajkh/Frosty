@@ -8,6 +8,9 @@ namespace Frosty.Scripts.Core;
 
 public sealed class Game : Module
 {
+    public static int PlayerDeath { get; set; }
+    public static double GameRunTime { get; set; }
+
     public static float entityFriction = 0.3f;
     public static float entityOnIceFriction = 0.05f;
     public static float Scale { get; } = 3;
@@ -43,9 +46,15 @@ public sealed class Game : Module
         SceneManager.AddScene("LevelJ", new LevelJ());
         SceneManager.AddScene("LevelK", new LevelK());
         SceneManager.AddScene("LevelL", new LevelL());
+        SceneManager.AddScene("LevelM", new LevelM());
+        SceneManager.AddScene("LevelN", new LevelN());
+        SceneManager.AddScene("LevelO", new LevelO());
+        SceneManager.AddScene("LevelP", new LevelP());
+        SceneManager.AddScene("LevelQ", new LevelQ());
+        SceneManager.AddScene("LevelR", new LevelR());
 
 #if DEBUG
-        SceneManager.ChangeScene("LevelC");
+        //SceneManager.ChangeScene("LevelR");
 #endif
     }
 
@@ -65,5 +74,8 @@ public sealed class Game : Module
     public override void Shutdown()
     {
         SceneManager.ActiveScene?.Shutdown();
+
+        NightSky.Dispose();
+        PlayerTalk.Dispose();
     }
 }

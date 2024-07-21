@@ -48,4 +48,9 @@ public class PlayerDieParticle : GameObject
 
         base.Draw(batcher);
     }
+
+    public override void Dispose()
+    {
+
+    }
 }

@@ -9,7 +9,7 @@ using System.Numerics;
 using Timer = Frosty.Scripts.Components.Timer;
 namespace Frosty.Scripts.GameObjects.Entities;
 
-enum PreviousFacing
+enum Facing
 {
     Left,
     Right
@@ -22,13 +22,15 @@ public class Player : Entity
     public bool playSoundWalkOnce;
     public bool freeze;
     public bool muteFootStep;
+    public bool noUpdate;
+    public bool walkRight;
 
     float maxSpeed = 300;
     float jumpHeight = 500;
     bool spawnDieParticle;
 
     List<PlayerDieParticle> playerDieParticles = new();
-    PreviousFacing previousFacing;
+    Facing previousFacing;
 
     SoundEffect[] playerWalkOnSnowSounds;
     SoundEffect[] playerWalkOnIceSounds;
@@ -76,7 +78,7 @@ public class Player : Entity
         AnimationManager.AddAnimation("player_walk_right", new Animation(playerWalkRight, playerWalkRight.Width, playerWalkRight.Height, 0.25f, true));
         AnimationManager.AddAnimation("player_walk_left", new Animation(playerWalkLeft, playerWalkLeft.Width, playerWalkLeft.Height, 0.25f, true));
 
-        previousFacing = PreviousFacing.Right;
+        previousFacing = Facing.Right;
     }
 
     public void PlayWalkSound(TileObject tileObject)
@@ -91,6 +93,10 @@ public class Player : Entity
                 Game.SoundEffectPlayer.SetSource(playerWalkOnIceSounds[Game.Random.Next() % playerWalkOnIceSounds.Length]);
                 Game.SoundEffectPlayer.Play();
                 break;
+            case BrittleIce:
+                Game.SoundEffectPlayer.SetSource(playerWalkOnIceSounds[Game.Random.Next() % playerWalkOnIceSounds.Length]);
+                Game.SoundEffectPlayer.Play();
+                break;
             default:
                 break;
         }
@@ -98,6 +104,11 @@ public class Player : Entity
 
     public override void Update()
     {
+        if (noUpdate)
+        {
+            return;
+        }
+
         foreach (var playerDieParticle in playerDieParticles)
         {
             playerDieParticle.Update();
@@ -132,7 +143,7 @@ public class Player : Entity
 
             walkTimer.Update();
 
-            if (Input.Keyboard.Down(Keys.D) && !freeze)
+            if ((Input.Keyboard.Down(Keys.D) && !freeze) || walkRight)
             {
                 if (MayJump > 0)
                 {
@@ -152,8 +163,8 @@ public class Player : Entity
                     AnimationManager.Stop();
                 }
 
-                velocity.X += Speed;
-                previousFacing = PreviousFacing.Right;
+                velocity.X += speed;
+                previousFacing = Facing.Right;
 
                 if (walkTimer.Paused)
                 {
@@ -180,8 +191,8 @@ public class Player : Entity
                     AnimationManager.Stop();
                 }
 
-                velocity.X += -Speed;
-                previousFacing = PreviousFacing.Left;
+                velocity.X += -speed;
+                previousFacing = Facing.Left;
 
                 if (walkTimer.Paused)
                 {
@@ -192,10 +203,10 @@ public class Player : Entity
             {
                 switch (previousFacing)
                 {
-                    case PreviousFacing.Left:
+                    case Facing.Left:
                         AnimationManager.SetCurrent("player_idle_left");
                         break;
-                    case PreviousFacing.Right:
+                    case Facing.Right:
                         AnimationManager.SetCurrent("player_idle_right");
                         break;
                 }
@@ -209,7 +220,7 @@ public class Player : Entity
             {
                 Game.SoundEffectPlayer.SetSource(playerJump);
                 Game.SoundEffectPlayer.Play();
-                velocity.Y = -jumpHeight;
+                velocity.Y += -jumpHeight;
                 MayJump = 0;
                 IsOnGround = false;
             }
@@ -239,5 +250,23 @@ public class Player : Entity
         }
 
         base.Draw(batcher);
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+
+        foreach (var playerWalkOnSnowSound in playerWalkOnSnowSounds)
+        {
+            playerWalkOnSnowSound.Dispose();
+        }
+
+        foreach (var playerWalkOnIceSound in playerWalkOnIceSounds)
+        {
+            playerWalkOnIceSound.Dispose();
+        }
+
+        playerJump.Dispose();
+        playerDied.Dispose();
     }
 }

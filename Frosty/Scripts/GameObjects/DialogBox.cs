@@ -12,7 +12,7 @@ public class DialogBox : GameObject
 
     float CharPerSeconds { get; set; }
 
-    static Texture dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "Graphics", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
+    Texture dialogBoxTexture;
 
     Timer speakDelayTimer;
 
@@ -27,8 +27,9 @@ public class DialogBox : GameObject
 
     public event Action? DialogFinished;
 
-    public DialogBox(Vector2 position, float charPerSeconds) : base(position, 0, Vector2.One * Game.Scale, new Vector2(dialogBoxTexture.Width, dialogBoxTexture.Height))
+    public DialogBox(Vector2 position, float charPerSeconds) : base(position, 0, Vector2.One * Game.Scale, new Vector2(180, 42))
     {
+        dialogBoxTexture = new Texture(new Aseprite(Path.Combine("Assets", "Graphics", "UIs", "dialog_box.ase")).Frames[0].Cels[0].Image);
         CharPerSeconds = charPerSeconds;
 
         speakDelayTimer = new Timer(0, false);
@@ -122,6 +123,14 @@ public class DialogBox : GameObject
             }
 
             base.Draw(batcher);
+        }
+    }
+
+    public override void Dispose()
+    {
+        if (!dialogBoxTexture.IsDisposed)
+        {
+            dialogBoxTexture.Dispose();
         }
     }
 }

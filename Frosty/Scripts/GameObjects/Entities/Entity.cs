@@ -7,7 +7,7 @@ namespace Frosty.Scripts.GameObjects.Entities;
 public class Entity : GameObject
 {
     public float friction = 0.1f;
-    public float Speed { get; private set; } = 500;
+    public float speed = 500;
 
     public bool Die { get; set; }
     public bool IsOnGround { get; protected set; }
@@ -49,10 +49,8 @@ public class Entity : GameObject
                     position.X += pushAwayForce;
                 }
 
-                if (velocity.X < 0)
-                {
-                    velocity.X = 1;
-                }
+                velocity.X = 0;
+
             }
             else
             {
@@ -63,10 +61,7 @@ public class Entity : GameObject
                     position.X -= pushAwayForce;
                 }
 
-                if (velocity.X > 0)
-                {
-                    velocity.X = -1;
-                }
+                velocity.X = 0;
             }
         }
         else
@@ -80,10 +75,7 @@ public class Entity : GameObject
                     position.Y += pushAwayForce;
                 }
 
-                if (velocity.Y < 0)
-                {
-                    velocity.Y = 0;
-                }
+                velocity.Y = 0;
 
                 isOnGroundSet.Add(false);
             }
@@ -96,10 +88,7 @@ public class Entity : GameObject
                     position.Y -= pushAwayForce;
                 }
 
-                if (velocity.Y > 0)
-                {
-                    velocity.Y = 0;
-                }
+                velocity.Y = 0;
 
                 isOnGroundSet.Add(true);
             }
@@ -140,5 +129,10 @@ public class Entity : GameObject
                 isOnGroundSet.Add(false);
             }
         }
+    }
+
+    public override void Dispose()
+    {
+
     }
 }

@@ -24,7 +24,6 @@ internal static class Program
         App.Resizable = false;
 #endif
         App.Register<Game>();
-
-        App.Run("Frosty", 960, 528);
+        App.Run(applicationName: "Frosty", width: 960, height: 528);
     }
 }

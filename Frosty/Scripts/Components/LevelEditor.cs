@@ -15,7 +15,7 @@ public enum EditingMode
     TileCollection
 }
 
-public class LevelEditor
+public class LevelEditor : IDisposable
 {
     public Level Level { get; }
     public int CurrentTileIndex { get; private set; } = 0;
@@ -345,5 +345,18 @@ public class LevelEditor
         }
 
         batcher.PopMatrix();
+    }
+
+    public void Dispose()
+    {
+        if (!TileMap.Texture.IsDisposed)
+        {
+            TileMap.Texture.Dispose();
+        }
+
+        if (!TileCollection.Texture.IsDisposed)
+        {
+            TileCollection.Texture.Dispose();
+        }
     }
 }

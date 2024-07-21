@@ -49,4 +49,12 @@ public class TileObject : GameObject
         }
         return false;
     }
+
+    public override void Dispose()
+    {
+        if (!Texture.IsDisposed)
+        {
+            Texture.Dispose();
+        }
+    }
 }
