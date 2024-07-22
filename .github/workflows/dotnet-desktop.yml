@@ -38,13 +38,13 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: Publish
       run: dotnet publish ./Frosty/Frosty.csproj --configuration Release --runtime ${{ matrix.platform }}-${{ matrix.arch }} --self-contained true --output ./publish
-    - name: Zip artifact
-      run: |
-        if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          Compress-Archive -Path ./publish/* -DestinationPath ./Frosty-${{ matrix.platform }}-${{ matrix.arch }}.zip
-        else
-          zip -r ./Frosty-${{ matrix.platform }}-${{ matrix.arch }}.zip ./publish
-        fi
+    - name: Zip artifact (Windows)
+      if: matrix.os == 'windows-latest'
+      run: Compress-Archive -Path ./publish/* -DestinationPath ./Frosty-${{ matrix.platform }}-${{ matrix.arch }}.zip
+      shell: pwsh
+    - name: Zip artifact (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: zip -r ./Frosty-${{ matrix.platform }}-${{ matrix.arch }}.zip ./publish
       shell: bash
     - name: Upload artifact
       uses: actions/upload-artifact@v3
