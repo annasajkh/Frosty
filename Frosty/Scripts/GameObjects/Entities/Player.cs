@@ -63,17 +63,15 @@ public class Player : Entity
         switch (tileObject)
         {
             case Solid:
-                Game.playerWalkOnSnowSounds[Game.Random.Next() % Game.playerWalkOnSnowSounds.Length].Play();
+                Game.SoundEffectPlayer.SetSource(Game.playerWalkOnSnowSounds[Game.Random.Next() % Game.playerWalkOnSnowSounds.Length]);
                 break;
             case Ice:
-                Game.playerWalkOnIceSounds[Game.Random.Next() % Game.playerWalkOnIceSounds.Length].Play();
-                break;
             case BrittleIce:
-                Game.playerWalkOnIceSounds[Game.Random.Next() % Game.playerWalkOnIceSounds.Length].Play();
-                break;
-            default:
+                Game.SoundEffectPlayer.SetSource(Game.playerWalkOnIceSounds[Game.Random.Next() % Game.playerWalkOnIceSounds.Length]);
                 break;
         }
+
+        Game.SoundEffectPlayer.Play();
     }
 
     public override void Update()
@@ -98,7 +96,8 @@ public class Player : Entity
 
         if (Die && !spawnDieParticle)
         {
-            Game.playerDied.Play();
+            Game.SoundEffectPlayer.SetSource(Game.playerDied);
+            Game.SoundEffectPlayer.Play();
 
             for (int i = 0; i < 20; i++)
             {
@@ -191,7 +190,9 @@ public class Player : Entity
 
             if (Input.Keyboard.Pressed(Keys.Space) && (IsOnGround || MayJump > 0) && !freeze)
             {
-                Game.playerJump.Play();
+                Game.SoundEffectPlayer.SetSource(Game.playerJump);
+                Game.SoundEffectPlayer.Play();
+
                 velocity.Y += -jumpHeight;
                 MayJump = 0;
                 IsOnGround = false;

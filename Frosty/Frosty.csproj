@@ -19,10 +19,38 @@
 		<DebugType>None</DebugType>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</IsWindows>
+		<IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Windows -->
+		<Content Include="Libraries/SDL2/Win_x86_64/SDL2.dll" Condition="'$(IsWindows)' == 'true'">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>SDL2.dll</Link>
+		</Content>
+
+		<Content Include="Libraries/SDL2/Win_x86_64/SDL2_mixer.dll" Condition="'$(IsWindows)' == 'true'">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>SDL2_mixer.dll</Link>
+		</Content>
+
+		<!-- Linux -->
+		<Content Include="Libraries/SDL2/Linux_x86_64/SDL2.so" Condition="'$(IsLinux)' == 'true'">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>SDL2.so</Link>
+		</Content>
+
+		<Content Include="Libraries/SDL2/Linux_x86_64/SDL2_mixer.so" Condition="'$(IsLinux)' == 'true'">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>SDL2_mixer.so</Link>
+		</Content>
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="FosterFramework" Version="0.1.18-alpha" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="SFML.Audio" Version="2.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>

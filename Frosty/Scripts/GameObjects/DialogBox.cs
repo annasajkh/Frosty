@@ -35,7 +35,8 @@ public class DialogBox : GameObject
         {
             if (sentenceIndex < CurrentSentence.Length)
             {
-                Game.PlayerTalk.Play();
+                Game.SoundEffectPlayer.SetSource(Game.PlayerTalk);
+                Game.SoundEffectPlayer.Play();
 
                 sentenceSpeak += CurrentSentence[sentenceIndex];
             }
