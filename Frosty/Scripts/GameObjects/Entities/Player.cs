@@ -64,14 +64,14 @@ public class Player : Entity
         {
             case Solid:
                 Game.SoundEffectPlayer.SetSource(Game.playerWalkOnSnowSounds[Game.Random.Next() % Game.playerWalkOnSnowSounds.Length]);
+                Game.SoundEffectPlayer.Play();
                 break;
             case Ice:
             case BrittleIce:
                 Game.SoundEffectPlayer.SetSource(Game.playerWalkOnIceSounds[Game.Random.Next() % Game.playerWalkOnIceSounds.Length]);
+                Game.SoundEffectPlayer.Play();
                 break;
         }
-
-        Game.SoundEffectPlayer.Play();
     }
 
     public override void Update()

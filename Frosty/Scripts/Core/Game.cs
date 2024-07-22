@@ -39,7 +39,6 @@ public sealed class Game : Module
     public static SoundEffect playerDied;
     public static SoundEffect[] iceBreakingSounds;
 
-
     public static SoundEffectPlayer SoundEffectPlayer { get; private set; } = new SoundEffectPlayer();
 
     public static Aseprite playerIdleLeft = new Aseprite(Path.Combine("Assets", "Graphics", "Player", "player_idle_left.ase"));
