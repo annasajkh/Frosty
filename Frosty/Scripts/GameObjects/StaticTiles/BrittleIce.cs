@@ -27,7 +27,6 @@ public class BrittleIce : TileObject
             Game.SoundEffectPlayer.Play();
             Break = true;
         };
-
     }
 
     public override void ResolveCollision(Entity entity)
