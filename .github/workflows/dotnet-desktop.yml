@@ -1,4 +1,5 @@
 name: Publish .NET 8 Desktop App
+
 on:
   push:
     branches: [ "main" ]
@@ -6,54 +7,49 @@ on:
       - "v*"
   pull_request:
     branches: [ "main" ]
+
 permissions:
   contents: write
+
 jobs:
-  build:
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            platform: win
-            arch: x64
-          - os: windows-latest
-            platform: win
-            arch: x86
-          - os: ubuntu-latest
-            platform: linux
-            arch: x64
-    runs-on: ${{ matrix.os }}
+  publish-windows:
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.x
-    - name: Cache .NET dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-    - name: Publish
-      run: dotnet publish ./Frosty/Frosty.csproj --configuration Release --runtime ${{ matrix.platform }}-${{ matrix.arch }} --self-contained true --output ./publish
-    - name: Zip artifact (Windows)
-      if: matrix.os == 'windows-latest'
-      run: Compress-Archive -Path ./publish/* -DestinationPath ./Frosty-${{ matrix.platform }}-${{ matrix.arch }}.zip
-      shell: pwsh
-    - name: Zip artifact (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      run: zip -r ./Frosty-${{ matrix.platform }}-${{ matrix.arch }}.zip ./publish
-      shell: bash
-    - name: Upload artifact
+    - name: Publish Windows
+      run: dotnet publish ./Frosty/Frosty.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish/windows
+    - name: Zip Windows artifact
+      run: Compress-Archive -Path ./publish/windows/* -DestinationPath ./Frosty-windows-x86_64.zip
+    - name: Upload Windows artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ matrix.platform }}-${{ matrix.arch }}
-        path: ./Frosty-${{ matrix.platform }}-${{ matrix.arch }}.zip
+        name: windows-app
+        path: ./Frosty-windows-x86_64.zip
+
+  publish-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: Publish Linux
+      run: dotnet publish ./Frosty/Frosty.csproj --configuration Release --runtime linux-x64 --self-contained true --output ./publish/linux
+    - name: Zip Linux artifact
+      run: zip -r ./Frosty-linux-x86_64.zip ./publish/linux
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux-app
+        path: ./Frosty-linux-x86_64.zip
 
   create-release:
-    needs: build
+    needs: [publish-windows, publish-linux]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     steps:
@@ -61,23 +57,12 @@ jobs:
       uses: actions/checkout@v3
     - name: Download artifacts
       uses: actions/download-artifact@v3
-    - name: Validate artifacts
-      run: |
-        for file in ./*/*.zip; do
-          if ! unzip -t "$file" > /dev/null; then
-            echo "Error: $file is not a valid zip file"
-            exit 1
-          fi
-        done
     - name: Create Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        assets=""
-        for file in ./*/*.zip; do
-          assets="$assets $file"
-        done
         gh release create ${{ github.ref_name }} \
           --title "Release ${{ github.ref_name }}" \
           --generate-notes \
-          $assets
+          ./windows-app/Frosty-windows-x86_64.zip \
+          ./linux-app/Frosty-linux-x86_64.zip
