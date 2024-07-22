@@ -103,7 +103,7 @@ public sealed class Game : Module
         SceneManager.AddScene("LevelR", new LevelR());
 
 #if DEBUG
-        SceneManager.ChangeScene("IntroLevel");
+        //SceneManager.ChangeScene("IntroLevel");
 #endif
     }
 
