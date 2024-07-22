@@ -12,13 +12,16 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
-        arch: [x64, x86]
         include:
           - os: windows-latest
             platform: win
+            arch: x64
+          - os: windows-latest
+            platform: win
+            arch: x86
           - os: ubuntu-latest
             platform: linux
+            arch: x64
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
